@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Typography,
@@ -7,8 +7,6 @@ import {
   CircularProgress,
   Paper,
   Button,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import type { Application, FilterOptions } from "../../types";
 import { ApplicationCard } from "./ApplicationCard";
@@ -27,7 +25,7 @@ interface ApplicationListProps {
   onAddClick: () => void;
 }
 
-export const ApplicationList: React.FC<ApplicationListProps> = ({ 
+export const ApplicationList: React.FC<ApplicationListProps> = ({
   applications,
   loading,
   error,
@@ -35,15 +33,9 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
   onEdit,
   onDelete,
   onUpdateFilters,
-  onAddClick
+  onAddClick,
 }) => {
-
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
-  
   // Assume drawer is open on desktop by default (matching Layout component)
-  const DRAWER_WIDTH = 240;
 
   const handleSearchChange = (search: string) => {
     onUpdateFilters({ search });
@@ -87,7 +79,14 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
           <Typography variant="h4" component="h1">
             Applications
           </Typography>

@@ -4,9 +4,7 @@ import {
   Toolbar,
   Typography,
   IconButton,
-  Box,
   useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
 
@@ -16,7 +14,6 @@ interface AppBarProps {
 
 export const AppBar: React.FC<AppBarProps> = ({ onMenuClick }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <MuiAppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>

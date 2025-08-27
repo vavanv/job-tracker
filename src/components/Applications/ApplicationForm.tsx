@@ -17,17 +17,20 @@ import {
   styled,
 } from "@mui/material";
 import { useApplications } from "../../hooks/useApplications";
-import { Description as DescriptionIcon, CloudUpload as CloudUploadIcon } from "@mui/icons-material";
+import {
+  Description as DescriptionIcon,
+  CloudUpload as CloudUploadIcon,
+} from "@mui/icons-material";
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
 import type { Application, ApplicationFormData } from "../../types";
@@ -86,8 +89,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
   const [coverLetterFile, setCoverLetterFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [deleteType, setDeleteType] = useState<'resume' | 'coverLetter' | null>(null);
-  
+  const [deleteType, setDeleteType] = useState<"resume" | "coverLetter" | null>(
+    null
+  );
+
   const { updateApplication } = useApplications();
 
   useEffect(() => {
@@ -173,7 +178,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const handleDeleteClick = (type: 'resume' | 'coverLetter') => {
+  const handleDeleteClick = (type: "resume" | "coverLetter") => {
     setDeleteType(type);
     setDeleteConfirmOpen(true);
   };
@@ -183,30 +188,30 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
 
     try {
       const updates: Partial<Application> = {};
-      
-      if (deleteType === 'resume') {
+
+      if (deleteType === "resume") {
         updates.resumeBlob = null;
         updates.resumeMeta = null;
-      } else if (deleteType === 'coverLetter') {
+      } else if (deleteType === "coverLetter") {
         updates.coverLetterBlob = null;
         updates.coverLetterMeta = null;
       }
 
       await updateApplication(application.id, updates);
-      
+
       // Update the local application object to reflect the changes
-      if (deleteType === 'resume') {
+      if (deleteType === "resume") {
         application.resumeBlob = null;
         application.resumeMeta = null;
-      } else if (deleteType === 'coverLetter') {
+      } else if (deleteType === "coverLetter") {
         application.coverLetterBlob = null;
         application.coverLetterMeta = null;
       }
-      
+
       setDeleteConfirmOpen(false);
       setDeleteType(null);
     } catch (error) {
-      console.error('Failed to delete file:', error);
+      console.error("Failed to delete file:", error);
     }
   };
 
@@ -218,11 +223,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('Form submitted with data:', formData);
-    console.log('Is editing application:', !!application);
+    console.log("Form submitted with data:", formData);
+    console.log("Is editing application:", !!application);
 
     if (!validateForm()) {
-      console.log('Form validation failed');
+      console.log("Form validation failed");
       return;
     }
 
@@ -239,7 +244,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
         jobLink: formData.jobLink.trim(),
       };
 
-      console.log('Payload before file processing:', payload);
+      console.log("Payload before file processing:", payload);
 
       // Handle resume: use new file if uploaded, otherwise preserve existing
       if (resumeFile) {
@@ -278,9 +283,9 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
         payload.coverLetterMeta = application.coverLetterMeta;
       }
 
-      console.log('Final payload being submitted:', payload);
+      console.log("Final payload being submitted:", payload);
       await onSubmit(payload);
-      console.log('onSubmit completed successfully');
+      console.log("onSubmit completed successfully");
 
       onClose();
     } catch (error) {
@@ -304,260 +309,279 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
   return (
     <>
       <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <form onSubmit={handleSubmit}>
-        <DialogTitle>
-          {application ? "Edit Application" : "Add New Application"}
-        </DialogTitle>
+        <form onSubmit={handleSubmit}>
+          <DialogTitle>
+            {application ? "Edit Application" : "Add New Application"}
+          </DialogTitle>
 
-        <DialogContent>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-            <TextField
-              label="Company Name"
-              value={formData.companyName}
-              onChange={(e) => handleChange("companyName", e.target.value)}
-              error={!!errors.companyName}
-              helperText={errors.companyName}
-              fullWidth
-              required
-              size="small"
-              variant="standard"
-            />
+          <DialogContent>
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
+            >
+              <TextField
+                label="Company Name"
+                value={formData.companyName}
+                onChange={(e) => handleChange("companyName", e.target.value)}
+                error={!!errors.companyName}
+                helperText={errors.companyName}
+                fullWidth
+                required
+                size="small"
+                variant="standard"
+              />
 
-            <TextField
-              label="Company Website (Optional)"
-              value={formData.companyWebsite || ""}
-              onChange={(e) => handleChange("companyWebsite", e.target.value)}
-              error={!!errors.companyWebsite}
-              helperText={errors.companyWebsite}
-              fullWidth
-              placeholder="https://example.com"
-              size="small"
-              variant="standard"
-            />
+              <TextField
+                label="Company Website (Optional)"
+                value={formData.companyWebsite || ""}
+                onChange={(e) => handleChange("companyWebsite", e.target.value)}
+                error={!!errors.companyWebsite}
+                helperText={errors.companyWebsite}
+                fullWidth
+                placeholder="https://example.com"
+                size="small"
+                variant="standard"
+              />
 
-            <TextField
-              label="Job Title"
-              value={formData.jobTitle}
-              onChange={(e) => handleChange("jobTitle", e.target.value)}
-              error={!!errors.jobTitle}
-              helperText={errors.jobTitle}
-              fullWidth
-              required
-              size="small"
-              variant="standard"
-            />
+              <TextField
+                label="Job Title"
+                value={formData.jobTitle}
+                onChange={(e) => handleChange("jobTitle", e.target.value)}
+                error={!!errors.jobTitle}
+                helperText={errors.jobTitle}
+                fullWidth
+                required
+                size="small"
+                variant="standard"
+              />
 
-            <TextField
-              label="Application Date"
-              type="date"
-              value={formData.applicationDate}
-              onChange={(e) => handleChange("applicationDate", e.target.value)}
-              error={!!errors.applicationDate}
-              helperText={errors.applicationDate}
-              fullWidth
-              required
-              InputLabelProps={{ shrink: true }}
-              size="small"
-              variant="standard"
-            />
-
-            <FormControl fullWidth size="small" variant="standard">
-              <InputLabel>Status</InputLabel>
-              <Select
-                value={formData.status}
-                label="Status"
+              <TextField
+                label="Application Date"
+                type="date"
+                value={formData.applicationDate}
                 onChange={(e) =>
-                  handleChange("status", e.target.value as ApplicationStatus)
+                  handleChange("applicationDate", e.target.value)
                 }
-              >
-                {Object.values(ApplicationStatus).map((status) => (
-                  <MenuItem key={status} value={status}>
-                    {status}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                error={!!errors.applicationDate}
+                helperText={errors.applicationDate}
+                fullWidth
+                required
+                InputLabelProps={{ shrink: true }}
+                size="small"
+                variant="standard"
+              />
 
-            <Stack spacing={1}>
-              <Typography variant="subtitle2">Resume (PDF/DOC/DOCX)</Typography>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <Button
-                  component="label"
-                  role={undefined}
-                  variant="outlined"
-                  tabIndex={-1}
-                  startIcon={<CloudUploadIcon />}
-                  size="small"
-                  sx={{ justifyContent: 'flex-start' }}
+              <FormControl fullWidth size="small" variant="standard">
+                <InputLabel>Status</InputLabel>
+                <Select
+                  value={formData.status}
+                  label="Status"
+                  onChange={(e) =>
+                    handleChange("status", e.target.value as ApplicationStatus)
+                  }
                 >
-                  UPLOAD
-                  <VisuallyHiddenInput
-                    type="file"
-                    accept={ACCEPTED_TYPES.join(",")}
-                    onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-                  />
-                </Button>
-                {!resumeFile && application?.resumeBlob && (
-                  <>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      startIcon={<DescriptionIcon />}
-                      onClick={() =>
-                        downloadBlob(
-                          application.resumeBlob!,
-                          application.resumeMeta?.fileName || "resume"
-                        )
+                  {Object.values(ApplicationStatus).map((status) => (
+                    <MenuItem key={status} value={status}>
+                      {status}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <Stack spacing={1}>
+                <Typography variant="subtitle2">
+                  Resume (PDF/DOC/DOCX)
+                </Typography>
+                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                  <Button
+                    component="label"
+                    role={undefined}
+                    variant="outlined"
+                    tabIndex={-1}
+                    startIcon={<CloudUploadIcon />}
+                    size="small"
+                    sx={{ justifyContent: "flex-start" }}
+                  >
+                    UPLOAD
+                    <VisuallyHiddenInput
+                      type="file"
+                      accept={ACCEPTED_TYPES.join(",")}
+                      onChange={(e) =>
+                        setResumeFile(e.target.files?.[0] || null)
                       }
-                    >
-                      RESUME
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="error"
-                      onClick={() => handleDeleteClick('resume')}
-                    >
-                      DELETE
-                    </Button>
-                  </>
-                )}
-              </Box>
-              {resumeFile && (
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Typography variant="body2" color="text.secondary">
-                    {resumeFile.name} ({Math.round(resumeFile.size / 1024)} KB)
-                  </Typography>
-                  <Button size="small" onClick={clearResume}>
-                    Remove
+                    />
                   </Button>
-                </Stack>
-              )}
-            </Stack>
+                  {!resumeFile && application?.resumeBlob && (
+                    <>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<DescriptionIcon />}
+                        onClick={() =>
+                          downloadBlob(
+                            application.resumeBlob!,
+                            application.resumeMeta?.fileName || "resume"
+                          )
+                        }
+                      >
+                        RESUME
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="error"
+                        onClick={() => handleDeleteClick("resume")}
+                      >
+                        DELETE
+                      </Button>
+                    </>
+                  )}
+                </Box>
+                {resumeFile && (
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Typography variant="body2" color="text.secondary">
+                      {resumeFile.name} ({Math.round(resumeFile.size / 1024)}{" "}
+                      KB)
+                    </Typography>
+                    <Button size="small" onClick={clearResume}>
+                      Remove
+                    </Button>
+                  </Stack>
+                )}
+              </Stack>
 
-            <Stack spacing={1}>
-              <Typography variant="subtitle2">
-                Cover Letter (PDF/DOC/DOCX)
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <Button
-                  component="label"
-                  role={undefined}
-                  variant="outlined"
-                  tabIndex={-1}
-                  startIcon={<CloudUploadIcon />}
-                  size="small"
-                  sx={{ justifyContent: 'flex-start' }}
-                >
-                  UPLOAD
-                  <VisuallyHiddenInput
-                    type="file"
-                    accept={ACCEPTED_TYPES.join(",")}
-                    onChange={(e) =>
-                      setCoverLetterFile(e.target.files?.[0] || null)
-                    }
-                  />
-                </Button>
-                {!coverLetterFile && application?.coverLetterBlob && (
-                  <>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      startIcon={<DescriptionIcon />}
-                      onClick={() =>
-                        downloadBlob(
-                          application.coverLetterBlob!,
-                          application.coverLetterMeta?.fileName || "cover-letter"
-                        )
+              <Stack spacing={1}>
+                <Typography variant="subtitle2">
+                  Cover Letter (PDF/DOC/DOCX)
+                </Typography>
+                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                  <Button
+                    component="label"
+                    role={undefined}
+                    variant="outlined"
+                    tabIndex={-1}
+                    startIcon={<CloudUploadIcon />}
+                    size="small"
+                    sx={{ justifyContent: "flex-start" }}
+                  >
+                    UPLOAD
+                    <VisuallyHiddenInput
+                      type="file"
+                      accept={ACCEPTED_TYPES.join(",")}
+                      onChange={(e) =>
+                        setCoverLetterFile(e.target.files?.[0] || null)
                       }
-                    >
-                      COVER LETTER
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="error"
-                      onClick={() => handleDeleteClick('coverLetter')}
-                    >
-                      DELETE
-                    </Button>
-                  </>
-                )}
-              </Box>
-              {coverLetterFile && (
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Typography variant="body2" color="text.secondary">
-                    {coverLetterFile.name} (
-                    {Math.round(coverLetterFile.size / 1024)} KB)
-                  </Typography>
-                  <Button size="small" onClick={clearCover}>
-                    Remove
+                    />
                   </Button>
-                </Stack>
-              )}
-            </Stack>
+                  {!coverLetterFile && application?.coverLetterBlob && (
+                    <>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<DescriptionIcon />}
+                        onClick={() =>
+                          downloadBlob(
+                            application.coverLetterBlob!,
+                            application.coverLetterMeta?.fileName ||
+                              "cover-letter"
+                          )
+                        }
+                      >
+                        COVER LETTER
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="error"
+                        onClick={() => handleDeleteClick("coverLetter")}
+                      >
+                        DELETE
+                      </Button>
+                    </>
+                  )}
+                </Box>
+                {coverLetterFile && (
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Typography variant="body2" color="text.secondary">
+                      {coverLetterFile.name} (
+                      {Math.round(coverLetterFile.size / 1024)} KB)
+                    </Typography>
+                    <Button size="small" onClick={clearCover}>
+                      Remove
+                    </Button>
+                  </Stack>
+                )}
+              </Stack>
 
-            {fileError && <FormHelperText error>{fileError}</FormHelperText>}
+              {fileError && <FormHelperText error>{fileError}</FormHelperText>}
 
-            <TextField
-              label="Job Link (Optional)"
-              value={formData.jobLink}
-              onChange={(e) => handleChange("jobLink", e.target.value)}
-              fullWidth
-              placeholder="https://..."
+              <TextField
+                label="Job Link (Optional)"
+                value={formData.jobLink}
+                onChange={(e) => handleChange("jobLink", e.target.value)}
+                fullWidth
+                placeholder="https://..."
+                size="small"
+                variant="standard"
+              />
+
+              <TextField
+                label="Notes (Optional)"
+                value={formData.notes}
+                onChange={(e) => handleChange("notes", e.target.value)}
+                fullWidth
+                multiline
+                rows={3}
+                placeholder="Add any additional notes..."
+                size="small"
+                variant="standard"
+              />
+            </Box>
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={onClose} disabled={loading} size="small">
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={loading}
               size="small"
-              variant="standard"
-            />
+            >
+              {loading ? "Saving..." : application ? "Update" : "Add"}
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
 
-            <TextField
-              label="Notes (Optional)"
-              value={formData.notes}
-              onChange={(e) => handleChange("notes", e.target.value)}
-              fullWidth
-              multiline
-              rows={3}
-              placeholder="Add any additional notes..."
-              size="small"
-              variant="standard"
-            />
-          </Box>
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteConfirmOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography id="delete-dialog-description">
+            Are you sure you want to delete the{" "}
+            {deleteType === "resume" ? "resume" : "cover letter"} file? This
+            action cannot be undone.
+          </Typography>
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={onClose} disabled={loading} size="small">
+          <Button onClick={handleDeleteCancel} color="primary">
             Cancel
           </Button>
-          <Button type="submit" variant="contained" disabled={loading} size="small">
-            {loading ? "Saving..." : application ? "Update" : "Add"}
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+          >
+            Delete
           </Button>
         </DialogActions>
-      </form>
-    </Dialog>
-    
-    {/* Delete Confirmation Dialog */}
-    <Dialog
-      open={deleteConfirmOpen}
-      onClose={handleDeleteCancel}
-      aria-labelledby="delete-dialog-title"
-      aria-describedby="delete-dialog-description"
-    >
-      <DialogTitle id="delete-dialog-title">
-        Confirm Delete
-      </DialogTitle>
-      <DialogContent>
-        <Typography id="delete-dialog-description">
-          Are you sure you want to delete the {deleteType === 'resume' ? 'resume' : 'cover letter'} file? This action cannot be undone.
-        </Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleDeleteCancel} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleDeleteConfirm} color="error" variant="contained">
-          Delete
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </Dialog>
     </>
   );
 };

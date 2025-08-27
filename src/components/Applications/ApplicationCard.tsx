@@ -6,12 +6,7 @@ import {
   Typography,
   Button,
   Box,
-  Chip,
-  IconButton,
-  useTheme,
-  useMediaQuery,
   Stack,
-  Link as MuiLink,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -20,7 +15,6 @@ import {
   CalendarToday as CalendarIcon,
   Description as DescriptionIcon,
   Article as ArticleIcon,
-  Download as DownloadIcon,
   Language as LanguageIcon,
 } from "@mui/icons-material";
 import type { Application } from "../../types";
@@ -43,8 +37,6 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const formatDate = (date: Date) => {
@@ -89,14 +81,16 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   const websiteHref = withProtocol(application.companyWebsite);
 
   return (
-    <Card sx={{ 
-      height: "100%", 
-      display: "flex", 
-      flexDirection: "column",
-      width: 320,
-      minWidth: 320,
-      maxWidth: 320
-    }}>
+    <Card
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        width: 320,
+        minWidth: 320,
+        maxWidth: 320,
+      }}
+    >
       <CardContent sx={{ flexGrow: 1 }}>
         <Box
           sx={{
@@ -106,9 +100,9 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
             mb: 2,
           }}
         >
-          <Typography 
-            variant="h6" 
-            component="h3" 
+          <Typography
+            variant="h6"
+            component="h3"
             gutterBottom
             sx={{
               display: "-webkit-box",
@@ -118,7 +112,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
               textOverflow: "ellipsis",
               lineHeight: 1.3,
               minHeight: "2.6em",
-              wordBreak: "break-word"
+              wordBreak: "break-word",
             }}
           >
             {application.jobTitle}
@@ -202,7 +196,9 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
         )}
       </CardContent>
 
-      <CardActions sx={{ flexDirection: "column", alignItems: "stretch", p: 2 }}>
+      <CardActions
+        sx={{ flexDirection: "column", alignItems: "stretch", p: 2 }}
+      >
         <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 1 }}>
           <Button
             variant="outlined"
@@ -224,7 +220,11 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           </Button>
         </Box>
 
-        <Typography variant="caption" color="text.secondary" sx={{ textAlign: "left" }}>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ textAlign: "left" }}
+        >
           Updated: {formatDate(application.updatedAt)}
         </Typography>
       </CardActions>
