@@ -320,6 +320,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               fullWidth
               required
               size="small"
+              variant="standard"
             />
 
             <TextField
@@ -331,6 +332,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               fullWidth
               placeholder="https://example.com"
               size="small"
+              variant="standard"
             />
 
             <TextField
@@ -342,6 +344,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               fullWidth
               required
               size="small"
+              variant="standard"
             />
 
             <TextField
@@ -355,9 +358,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               required
               InputLabelProps={{ shrink: true }}
               size="small"
+              variant="standard"
             />
 
-            <FormControl fullWidth size="small">
+            <FormControl fullWidth size="small" variant="standard">
               <InputLabel>Status</InputLabel>
               <Select
                 value={formData.status}
@@ -502,6 +506,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               fullWidth
               placeholder="https://..."
               size="small"
+              variant="standard"
             />
 
             <TextField
@@ -513,6 +518,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               rows={3}
               placeholder="Add any additional notes..."
               size="small"
+              variant="standard"
             />
           </Box>
         </DialogContent>

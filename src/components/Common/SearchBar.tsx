@@ -25,7 +25,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        variant="outlined"
+        variant="standard"
         size="small"
         InputProps={{
           startAdornment: (
