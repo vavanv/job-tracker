@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -25,6 +25,7 @@ import {
 } from "@mui/icons-material";
 import type { Application } from "../../types";
 import { StatusBadge } from "./StatusBadge";
+import { ConfirmDialog } from "../Common/ConfirmDialog";
 
 interface ApplicationCardProps {
   application: Application;
@@ -44,6 +45,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString();
@@ -53,10 +55,17 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
     onEdit(application);
   };
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this application?")) {
-      onDelete(application.id);
-    }
+  const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    onDelete(application.id);
+    setShowDeleteDialog(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteDialog(false);
   };
 
   const handleJobLink = () => {
@@ -193,31 +202,43 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
         )}
       </CardContent>
 
-      <CardActions sx={{ justifyContent: "space-between", p: 2 }}>
-        <Box>
-          <IconButton
-            size="small"
+      <CardActions sx={{ flexDirection: "column", alignItems: "stretch", p: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 1 }}>
+          <Button
+            variant="outlined"
+            startIcon={<EditIcon />}
             onClick={handleEdit}
-            color="primary"
-            aria-label="edit application"
-          >
-            <EditIcon />
-          </IconButton>
-
-          <IconButton
+            sx={{ mr: 1 }}
             size="small"
-            onClick={handleDelete}
-            color="error"
-            aria-label="delete application"
           >
-            <DeleteIcon />
-          </IconButton>
+            Edit
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteClick}
+            size="small"
+          >
+            Delete
+          </Button>
         </Box>
 
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" color="text.secondary" sx={{ textAlign: "left" }}>
           Updated: {formatDate(application.updatedAt)}
         </Typography>
       </CardActions>
+
+      <ConfirmDialog
+        open={showDeleteDialog}
+        title="Delete Application"
+        message={`Are you sure you want to delete the application for ${application.jobTitle} at ${application.companyName}? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmColor="error"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </Card>
   );
 };

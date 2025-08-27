@@ -3,8 +3,6 @@ import {
   TextField,
   InputAdornment,
   Box,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
@@ -19,8 +17,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onChange,
   placeholder = "Search by company or job title...",
 }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Box sx={{ mb: 2 }}>
@@ -30,7 +26,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         variant="outlined"
-        size={isMobile ? "small" : "medium"}
+        size="small"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

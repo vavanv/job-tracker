@@ -14,8 +14,22 @@ import {
   FormHelperText,
   Typography,
   Stack,
+  styled,
 } from "@mui/material";
-import { Description as DescriptionIcon } from "@mui/icons-material";
+import { useApplications } from "../../hooks/useApplications";
+import { Description as DescriptionIcon, CloudUpload as CloudUploadIcon } from "@mui/icons-material";
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 import type { Application, ApplicationFormData } from "../../types";
 import { ApplicationStatus } from "../../types";
 
@@ -71,6 +85,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [coverLetterFile, setCoverLetterFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteType, setDeleteType] = useState<'resume' | 'coverLetter' | null>(null);
+  
+  const { updateApplication } = useApplications();
 
   useEffect(() => {
     if (application) {
@@ -153,6 +171,48 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+  };
+
+  const handleDeleteClick = (type: 'resume' | 'coverLetter') => {
+    setDeleteType(type);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!application || !deleteType) return;
+
+    try {
+      const updates: Partial<Application> = {};
+      
+      if (deleteType === 'resume') {
+        updates.resumeBlob = null;
+        updates.resumeMeta = null;
+      } else if (deleteType === 'coverLetter') {
+        updates.coverLetterBlob = null;
+        updates.coverLetterMeta = null;
+      }
+
+      await updateApplication(application.id, updates);
+      
+      // Update the local application object to reflect the changes
+      if (deleteType === 'resume') {
+        application.resumeBlob = null;
+        application.resumeMeta = null;
+      } else if (deleteType === 'coverLetter') {
+        application.coverLetterBlob = null;
+        application.coverLetterMeta = null;
+      }
+      
+      setDeleteConfirmOpen(false);
+      setDeleteType(null);
+    } catch (error) {
+      console.error('Failed to delete file:', error);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmOpen(false);
+    setDeleteType(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -242,7 +302,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
   const clearCover = () => setCoverLetterFile(null);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <>
+      <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <form onSubmit={handleSubmit}>
         <DialogTitle>
           {application ? "Edit Application" : "Add New Application"}
@@ -258,6 +319,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               helperText={errors.companyName}
               fullWidth
               required
+              size="small"
             />
 
             <TextField
@@ -268,6 +330,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               helperText={errors.companyWebsite}
               fullWidth
               placeholder="https://example.com"
+              size="small"
             />
 
             <TextField
@@ -278,6 +341,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               helperText={errors.jobTitle}
               fullWidth
               required
+              size="small"
             />
 
             <TextField
@@ -290,9 +354,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               fullWidth
               required
               InputLabelProps={{ shrink: true }}
+              size="small"
             />
 
-            <FormControl fullWidth>
+            <FormControl fullWidth size="small">
               <InputLabel>Status</InputLabel>
               <Select
                 value={formData.status}
@@ -311,11 +376,49 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
 
             <Stack spacing={1}>
               <Typography variant="subtitle2">Resume (PDF/DOC/DOCX)</Typography>
-              <input
-                type="file"
-                accept={ACCEPTED_TYPES.join(",")}
-                onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-              />
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Button
+                  component="label"
+                  role={undefined}
+                  variant="outlined"
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                  size="small"
+                  sx={{ justifyContent: 'flex-start' }}
+                >
+                  UPLOAD
+                  <VisuallyHiddenInput
+                    type="file"
+                    accept={ACCEPTED_TYPES.join(",")}
+                    onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                  />
+                </Button>
+                {!resumeFile && application?.resumeBlob && (
+                  <>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<DescriptionIcon />}
+                      onClick={() =>
+                        downloadBlob(
+                          application.resumeBlob!,
+                          application.resumeMeta?.fileName || "resume"
+                        )
+                      }
+                    >
+                      RESUME
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      color="error"
+                      onClick={() => handleDeleteClick('resume')}
+                    >
+                      DELETE
+                    </Button>
+                  </>
+                )}
+              </Box>
               {resumeFile && (
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Typography variant="body2" color="text.secondary">
@@ -326,34 +429,57 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
                   </Button>
                 </Stack>
               )}
-              {!resumeFile && application?.resumeBlob && (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<DescriptionIcon />}
-                  onClick={() =>
-                    downloadBlob(
-                      application.resumeBlob!,
-                      application.resumeMeta?.fileName || "resume"
-                    )
-                  }
-                >
-                  RESUME
-                </Button>
-              )}
             </Stack>
 
             <Stack spacing={1}>
               <Typography variant="subtitle2">
                 Cover Letter (PDF/DOC/DOCX)
               </Typography>
-              <input
-                type="file"
-                accept={ACCEPTED_TYPES.join(",")}
-                onChange={(e) =>
-                  setCoverLetterFile(e.target.files?.[0] || null)
-                }
-              />
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Button
+                  component="label"
+                  role={undefined}
+                  variant="outlined"
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                  size="small"
+                  sx={{ justifyContent: 'flex-start' }}
+                >
+                  UPLOAD
+                  <VisuallyHiddenInput
+                    type="file"
+                    accept={ACCEPTED_TYPES.join(",")}
+                    onChange={(e) =>
+                      setCoverLetterFile(e.target.files?.[0] || null)
+                    }
+                  />
+                </Button>
+                {!coverLetterFile && application?.coverLetterBlob && (
+                  <>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<DescriptionIcon />}
+                      onClick={() =>
+                        downloadBlob(
+                          application.coverLetterBlob!,
+                          application.coverLetterMeta?.fileName || "cover-letter"
+                        )
+                      }
+                    >
+                      COVER LETTER
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      color="error"
+                      onClick={() => handleDeleteClick('coverLetter')}
+                    >
+                      DELETE
+                    </Button>
+                  </>
+                )}
+              </Box>
               {coverLetterFile && (
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Typography variant="body2" color="text.secondary">
@@ -375,6 +501,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               onChange={(e) => handleChange("jobLink", e.target.value)}
               fullWidth
               placeholder="https://..."
+              size="small"
             />
 
             <TextField
@@ -385,19 +512,46 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               multiline
               rows={3}
               placeholder="Add any additional notes..."
+              size="small"
             />
           </Box>
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={onClose} disabled={loading}>
+          <Button onClick={onClose} disabled={loading} size="small">
             Cancel
           </Button>
-          <Button type="submit" variant="contained" disabled={loading}>
+          <Button type="submit" variant="contained" disabled={loading} size="small">
             {loading ? "Saving..." : application ? "Update" : "Add"}
           </Button>
         </DialogActions>
       </form>
     </Dialog>
+    
+    {/* Delete Confirmation Dialog */}
+    <Dialog
+      open={deleteConfirmOpen}
+      onClose={handleDeleteCancel}
+      aria-labelledby="delete-dialog-title"
+      aria-describedby="delete-dialog-description"
+    >
+      <DialogTitle id="delete-dialog-title">
+        Confirm Delete
+      </DialogTitle>
+      <DialogContent>
+        <Typography id="delete-dialog-description">
+          Are you sure you want to delete the {deleteType === 'resume' ? 'resume' : 'cover letter'} file? This action cannot be undone.
+        </Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleDeleteCancel} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
+    </>
   );
 };

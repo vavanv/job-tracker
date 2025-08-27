@@ -6,6 +6,7 @@ import {
   Alert,
   CircularProgress,
   Paper,
+  Button,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
@@ -13,6 +14,7 @@ import type { Application, FilterOptions } from "../../types";
 import { ApplicationCard } from "./ApplicationCard";
 import { SearchBar } from "../Common/SearchBar";
 import { FilterPanel } from "../Common/FilterPanel";
+import { Add as AddIcon } from "@mui/icons-material";
 
 interface ApplicationListProps {
   applications: Application[];
@@ -22,6 +24,7 @@ interface ApplicationListProps {
   onEdit: (application: Application) => void;
   onDelete: (id: string) => Promise<void>;
   onUpdateFilters: (filters: Partial<FilterOptions>) => void;
+  onAddClick: () => void;
 }
 
 export const ApplicationList: React.FC<ApplicationListProps> = ({ 
@@ -31,11 +34,16 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
   filters,
   onEdit,
   onDelete,
-  onUpdateFilters
+  onUpdateFilters,
+  onAddClick
 }) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+  
+  // Assume drawer is open on desktop by default (matching Layout component)
+  const DRAWER_WIDTH = 240;
 
   const handleSearchChange = (search: string) => {
     onUpdateFilters({ search });
@@ -78,13 +86,25 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Applications
-      </Typography>
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+          <Typography variant="h4" component="h1">
+            Applications
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={onAddClick}
+            size="small"
+          >
+            New Application
+          </Button>
+        </Box>
 
-      <SearchBar value={filters.search} onChange={handleSearchChange} />
+        <SearchBar value={filters.search} onChange={handleSearchChange} />
 
-      <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
+        <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
+      </Box>
 
       {applications.length === 0 ? (
         <Paper sx={{ p: 4, textAlign: "center" }}>
@@ -97,7 +117,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
             filters.dateFrom ||
             filters.dateTo
               ? "Try adjusting your search or filters"
-              : "Start by adding your first job application using the + button above"}
+              : "Start by adding your first job application using the New Application button above"}
           </Typography>
         </Paper>
       ) : (

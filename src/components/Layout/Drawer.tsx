@@ -90,14 +90,23 @@ export const Drawer: React.FC<DrawerProps> = ({
     );
   }
 
+  // Desktop drawer with slide animation
   return (
     <MuiDrawer
-      variant="permanent"
+      variant="persistent"
+      anchor="left"
+      open={open}
       sx={{
         display: { xs: "none", md: "block" },
-        "& .MuiDrawer-paper": { boxSizing: "border-box", width: DRAWER_WIDTH },
+        "& .MuiDrawer-paper": {
+          boxSizing: "border-box",
+          width: DRAWER_WIDTH,
+          transition: theme.transitions.create('transform', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+        },
       }}
-      open
     >
       {drawerContent}
     </MuiDrawer>

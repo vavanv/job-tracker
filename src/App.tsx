@@ -96,7 +96,7 @@ function App() {
   const renderContent = () => {
     switch (currentRoute) {
       case "dashboard":
-        return <Dashboard stats={getStats()} loading={loading} />;
+        return <Dashboard stats={getStats()} loading={loading} onAddClick={handleAddClick} />;
       case "applications":
         return (
           <ApplicationList 
@@ -107,6 +107,7 @@ function App() {
             onEdit={handleEditApplication}
             onDelete={deleteApplication}
             onUpdateFilters={updateFilters}
+            onAddClick={handleAddClick}
           />
         );
       case "settings":
@@ -127,7 +128,6 @@ function App() {
       <Layout
         currentRoute={currentRoute}
         onNavigate={handleNavigate}
-        onAddClick={handleAddClick}
       >
         {renderContent()}
       </Layout>

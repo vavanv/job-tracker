@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Button,
   useTheme,
 } from "@mui/material";
 import {
@@ -15,12 +16,14 @@ import {
   CheckCircle as CheckCircleIcon,
   Cancel as CancelIcon,
   RemoveCircle as RemoveCircleIcon,
+  Add as AddIcon,
 } from "@mui/icons-material";
 import type { Stats } from "../../types";
 
 interface DashboardProps {
   stats: Stats;
   loading: boolean;
+  onAddClick: () => void;
 }
 
 const StatCard: React.FC<{
@@ -56,7 +59,7 @@ const StatCard: React.FC<{
   </Card>
 );
 
-export const Dashboard: React.FC<DashboardProps> = ({ stats, loading }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick }) => {
   const theme = useTheme();
 
   if (loading) {
@@ -140,11 +143,17 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading }) => {
         <Typography variant="h6" gutterBottom>
           Quick Actions
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Use the + button in the top right to add new job applications, or
-          navigate to the Applications section to view and manage your existing
-          applications.
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Add new job applications or navigate to the Applications section to view and manage your existing applications.
         </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={onAddClick}
+          size="small"
+        >
+          New Application
+        </Button>
       </Paper>
     </Box>
   );

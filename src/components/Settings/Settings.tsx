@@ -129,6 +129,7 @@ export const Settings: React.FC = () => {
             onClick={handleExport}
             disabled={isExporting}
             sx={{ minWidth: 150 }}
+            size="small"
           >
             {isExporting ? 'Exporting...' : 'Export Data'}
           </Button>
@@ -139,6 +140,7 @@ export const Settings: React.FC = () => {
             onClick={handleImportClick}
             disabled={isImporting}
             sx={{ minWidth: 150 }}
+            size="small"
           >
             Import Data
           </Button>
@@ -243,7 +245,7 @@ export const Settings: React.FC = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseImportDialog}>
+          <Button onClick={handleCloseImportDialog} size="small">
             Close
           </Button>
         </DialogActions>

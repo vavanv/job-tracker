@@ -38,7 +38,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     >
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={6} md={3}>
-          <FormControl fullWidth size={isMobile ? "small" : "medium"}>
+          <FormControl fullWidth size="small">
             <InputLabel>Status</InputLabel>
             <Select
               value={filters.status}
@@ -67,7 +67,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             value={filters.dateFrom || ""}
             onChange={(e) => handleChange("dateFrom", e.target.value)}
             fullWidth
-            size={isMobile ? "small" : "medium"}
+            size="small"
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
@@ -79,7 +79,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             value={filters.dateTo || ""}
             onChange={(e) => handleChange("dateTo", e.target.value)}
             fullWidth
-            size={isMobile ? "small" : "medium"}
+            size="small"
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
@@ -98,7 +98,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 })
               }
               fullWidth
-              size={isMobile ? "small" : "medium"}
+              size="small"
               InputProps={{
                 readOnly: true,
                 sx: { cursor: "pointer" },
