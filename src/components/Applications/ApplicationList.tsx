@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import type { Application, FilterOptions } from "../../types";
 import { ApplicationCard } from "./ApplicationCard";
-import { SearchBar } from "../Common/SearchBar";
+
 import { FilterPanel } from "../Common/FilterPanel";
 import { Add as AddIcon } from "@mui/icons-material";
 
@@ -37,9 +37,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
 }) => {
   // Assume drawer is open on desktop by default (matching Layout component)
 
-  const handleSearchChange = (search: string) => {
-    onUpdateFilters({ search });
-  };
+
 
   const handleFilterChange = (newFilters: Partial<FilterOptions>) => {
     onUpdateFilters(newFilters);
@@ -100,8 +98,6 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
           </Button>
         </Box>
 
-        <SearchBar value={filters.search} onChange={handleSearchChange} />
-
         <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
       </Box>
 
@@ -122,7 +118,16 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
       ) : (
         <Grid container spacing={3}>
           {applications.map((application) => (
-            <Grid key={application.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+            <Grid 
+              key={application.id} 
+              size={{ 
+                xs: 12, 
+                sm: 6, 
+                md: 4, 
+                lg: 3, 
+                xl: 2.4 
+              }}
+            >
               <ApplicationCard
                 application={application}
                 onEdit={onEdit}

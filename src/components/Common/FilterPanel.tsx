@@ -7,6 +7,7 @@ import {
   MenuItem,
   TextField,
   Grid,
+  Button,
 } from "@mui/material";
 import { ApplicationStatus } from "../../types";
 import type { FilterOptions } from "../../types";
@@ -20,7 +21,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   filters,
   onFilterChange,
 }) => {
-
   const handleChange = (
     field: keyof FilterOptions,
     value: string | ApplicationStatus | "all"
@@ -32,8 +32,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     <Box
       sx={{ mb: 3, p: 2, backgroundColor: "background.paper", borderRadius: 1 }}
     >
-      <Grid container spacing={2} alignItems="center">
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid container spacing={1} alignItems="center">
+        <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+          <TextField
+            label="Search"
+            value={filters.search || ""}
+            onChange={(e) => handleChange("search", e.target.value)}
+            fullWidth
+            size="small"
+            variant="standard"
+            placeholder="Search by company or job title..."
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
           <FormControl fullWidth size="small" variant="standard">
             <InputLabel>Status</InputLabel>
             <Select
@@ -56,7 +68,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           </FormControl>
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
           <TextField
             label="From Date"
             type="date"
@@ -69,7 +81,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
           <TextField
             label="To Date"
             type="date"
@@ -82,11 +94,18 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           />
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <TextField
-              label="Clear Filters"
-              value=""
+        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              height: "100%",
+              alignItems: "flex-end",
+            }}
+          >
+            <Button
+              variant="outlined"
+              size="small"
               onClick={() =>
                 onFilterChange({
                   search: "",
@@ -95,22 +114,10 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   dateTo: "",
                 })
               }
-              fullWidth
-              size="small"
-              variant="standard"
-              InputProps={{
-                readOnly: true,
-                sx: { cursor: "pointer" },
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  cursor: "pointer",
-                  "&:hover": {
-                    backgroundColor: "action.hover",
-                  },
-                },
-              }}
-            />
+              sx={{ mb: 0.5 }}
+            >
+              Clear Filters
+            </Button>
           </Box>
         </Grid>
       </Grid>

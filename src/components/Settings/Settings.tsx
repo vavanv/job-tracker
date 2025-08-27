@@ -15,10 +15,11 @@ import {
   List,
   ListItem,
   ListItemText,
+  styled,
 } from "@mui/material";
 import {
   Download as DownloadIcon,
-  Upload as UploadIcon,
+  CloudUpload as CloudUploadIcon,
   Warning as WarningIcon,
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
@@ -27,6 +28,18 @@ import {
   exportApplicationsAsJSON,
   importApplicationsFromJSON,
 } from "../../utils/indexedDB";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 import { useApplications } from "../../hooks/useApplications";
 
 interface ImportResult {
@@ -158,7 +171,7 @@ export const Settings: React.FC = () => {
 
           <Button
             variant="outlined"
-            startIcon={<UploadIcon />}
+            startIcon={<CloudUploadIcon />}
             onClick={handleImportClick}
             disabled={isImporting}
             sx={{ minWidth: 150 }}
@@ -208,13 +221,23 @@ export const Settings: React.FC = () => {
             importing.
           </Alert>
 
-          <input
-            type="file"
-            accept=".json,application/json"
-            onChange={handleFileSelect}
-            style={{ marginBottom: "16px" }}
+          <Button
+            component="label"
+            role={undefined}
+            variant="outlined"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+            size="small"
+            sx={{ justifyContent: "flex-start", mb: 2 }}
             disabled={isImporting}
-          />
+          >
+            UPLOAD
+            <VisuallyHiddenInput
+              type="file"
+              accept=".json,application/json"
+              onChange={handleFileSelect}
+            />
+          </Button>
 
           {isImporting && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>

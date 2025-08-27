@@ -86,9 +86,8 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        width: 320,
-        minWidth: 320,
-        maxWidth: 320,
+        minWidth: 280,
+        maxWidth: 400,
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
