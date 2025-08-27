@@ -7,8 +7,6 @@ import {
   MenuItem,
   TextField,
   Grid,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import { ApplicationStatus } from "../../types";
 import type { FilterOptions } from "../../types";
@@ -22,8 +20,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   filters,
   onFilterChange,
 }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleChange = (
     field: keyof FilterOptions,
@@ -37,7 +33,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       sx={{ mb: 3, p: 2, backgroundColor: "background.paper", borderRadius: 1 }}
     >
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <FormControl fullWidth size="small" variant="standard">
             <InputLabel>Status</InputLabel>
             <Select
@@ -60,7 +56,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           </FormControl>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <TextField
             label="From Date"
             type="date"
@@ -73,7 +69,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <TextField
             label="To Date"
             type="date"
@@ -86,7 +82,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <TextField
               label="Clear Filters"

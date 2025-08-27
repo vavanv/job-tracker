@@ -122,7 +122,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
       ) : (
         <Grid container spacing={3}>
           {applications.map((application) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={application.id}>
+            <Grid key={application.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
               <ApplicationCard
                 application={application}
                 onEdit={onEdit}

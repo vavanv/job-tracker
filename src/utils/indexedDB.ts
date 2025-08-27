@@ -9,7 +9,7 @@ export const initDB = async (): Promise<IDBPDatabase> => {
   if (db) return db;
 
   db = await openDB(DATABASE_NAME, DATABASE_VERSION, {
-    upgrade(db, oldVersion) {
+    upgrade(db, _oldVersion) {
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, { keyPath: "id" });
         store.createIndex("companyName", "companyName", { unique: false });

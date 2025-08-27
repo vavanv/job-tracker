@@ -85,8 +85,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
   const [formData, setFormData] =
     useState<ApplicationFormData>(initialFormData);
   const [errors, setErrors] = useState<Partial<ApplicationFormData>>({});
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [coverLetterFile, setCoverLetterFile] = useState<File | null>(null);
+  const [resumeFile, setResumeFile] = useState<File | undefined>(undefined);
+  const [coverLetterFile, setCoverLetterFile] = useState<File | undefined>(undefined);
   const [fileError, setFileError] = useState<string | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteType, setDeleteType] = useState<"resume" | "coverLetter" | null>(
@@ -108,13 +108,13 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
         notes: application.notes || "",
         jobLink: application.jobLink || "",
       });
-      setResumeFile(null);
-      setCoverLetterFile(null);
+      setResumeFile(undefined);
+      setCoverLetterFile(undefined);
       setFileError(null);
     } else {
       setFormData(initialFormData);
-      setResumeFile(null);
-      setCoverLetterFile(null);
+      setResumeFile(undefined);
+      setCoverLetterFile(undefined);
       setFileError(null);
     }
     setErrors({});
@@ -190,22 +190,22 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
       const updates: Partial<Application> = {};
 
       if (deleteType === "resume") {
-        updates.resumeBlob = null;
-        updates.resumeMeta = null;
+        updates.resumeBlob = undefined;
+        updates.resumeMeta = undefined;
       } else if (deleteType === "coverLetter") {
-        updates.coverLetterBlob = null;
-        updates.coverLetterMeta = null;
+        updates.coverLetterBlob = undefined;
+        updates.coverLetterMeta = undefined;
       }
 
       await updateApplication(application.id, updates);
 
       // Update the local application object to reflect the changes
       if (deleteType === "resume") {
-        application.resumeBlob = null;
-        application.resumeMeta = null;
+        application.resumeBlob = undefined;
+        application.resumeMeta = undefined;
       } else if (deleteType === "coverLetter") {
-        application.coverLetterBlob = null;
-        application.coverLetterMeta = null;
+        application.coverLetterBlob = undefined;
+        application.coverLetterMeta = undefined;
       }
 
       setDeleteConfirmOpen(false);
@@ -303,8 +303,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
     }
   };
 
-  const clearResume = () => setResumeFile(null);
-  const clearCover = () => setCoverLetterFile(null);
+  const clearResume = () => setResumeFile(undefined);
+  const clearCover = () => setCoverLetterFile(undefined);
 
   return (
     <>
@@ -406,7 +406,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
                       type="file"
                       accept={ACCEPTED_TYPES.join(",")}
                       onChange={(e) =>
-                        setResumeFile(e.target.files?.[0] || null)
+                        setResumeFile(e.target.files?.[0] || undefined)
                       }
                     />
                   </Button>
@@ -468,7 +468,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
                       type="file"
                       accept={ACCEPTED_TYPES.join(",")}
                       onChange={(e) =>
-                        setCoverLetterFile(e.target.files?.[0] || null)
+                        setCoverLetterFile(e.target.files?.[0] || undefined)
                       }
                     />
                   </Button>
