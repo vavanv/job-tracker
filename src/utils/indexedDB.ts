@@ -76,20 +76,17 @@ export const updateApplication = async (
 };
 
 export const deleteApplication = async (id: string): Promise<void> => {
-  const database = await initDB();
-  await database.delete(STORE_NAME, id);
+  (await initDB()).delete(STORE_NAME, id);
 };
 
 export const getApplication = async (
   id: string
 ): Promise<Application | undefined> => {
-  const database = await initDB();
-  return database.get(STORE_NAME, id);
+  return (await initDB()).get(STORE_NAME, id);
 };
 
 export const getAllApplications = async (): Promise<Application[]> => {
-  const database = await initDB();
-  return database.getAll(STORE_NAME);
+  return (await initDB()).getAll(STORE_NAME);
 };
 
 export const searchApplications = async (
