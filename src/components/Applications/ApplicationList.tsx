@@ -54,11 +54,12 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
     }
   };
 
-  const handleDuplicate = async (application: Application) => {
+  const handleDuplicate = async (application: Application): Promise<string> => {
     try {
-      await onDuplicate(application);
+      return await onDuplicate(application);
     } catch (error) {
       console.error("Failed to duplicate application:", error);
+      throw error;
     }
   };
 
@@ -146,7 +147,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
                 application={application}
                 onEdit={onEdit}
                 onDelete={handleDelete}
-                onDuplicate={() => handleDuplicate(application)}
+                onDuplicate={onDuplicate}
               />
             </Grid>
           ))}

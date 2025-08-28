@@ -7,7 +7,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Chip,
   IconButton,
   Menu,
   MenuItem,
@@ -73,14 +72,11 @@ export const ApplicationGridView: React.FC<ApplicationGridViewProps> = ({
     handleMenuClose();
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString();
   };
 
-  const formatSalary = (salary?: string) => {
-    if (!salary) return '-';
-    return salary;
-  };
+
 
   return (
     <TableContainer component={Paper}>
@@ -92,8 +88,7 @@ export const ApplicationGridView: React.FC<ApplicationGridViewProps> = ({
             <TableCell>Status</TableCell>
             <TableCell>Applied Date</TableCell>
             <TableCell>Updated Date</TableCell>
-            <TableCell>Salary</TableCell>
-            <TableCell>Contact</TableCell>
+
             <TableCell align="right">Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -153,16 +148,7 @@ export const ApplicationGridView: React.FC<ApplicationGridViewProps> = ({
                   {formatDate(application.updatedAt)}
                 </Typography>
               </TableCell>
-              <TableCell>
-                <Typography variant="body2">
-                  {formatSalary(application.salary)}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="body2">
-                  {application.contactPerson || '-'}
-                </Typography>
-              </TableCell>
+
               <TableCell align="right">
                 <IconButton
                   size="small"
