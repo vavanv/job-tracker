@@ -12,23 +12,30 @@ A modern, responsive web application for tracking job applications built with Re
 - **Company Information**: Store company names, websites, and job details
 - **Notes**: Add personal notes and observations for each application
 - **Context Menu**: Access Edit, Duplicate, and Delete actions via a convenient three-dot menu
+- **Data Grid View**: Advanced table view with sorting, pagination, and configurable page sizes (10, 25, 50, 100)
+- **Quick Links**: Direct access to company websites and job postings from the grid view
 
 ### 🔍 Search & Filter
 - **Smart Search**: Search applications by company name or job title
 - **Status Filtering**: Filter by application status (Applied, Interview, Offer, etc.)
 - **Date Range Filtering**: Filter applications by date applied
 - **Clear Filters**: Quick reset of all active filters
+- **Advanced Grid Filtering**: Built-in column filtering and sorting in data grid view
 
 ### 📊 Dashboard
 - **Statistics Overview**: View total applications, interviews, offers, and rejections
 - **Visual Stats Cards**: Color-coded statistics with icons
 - **Quick Actions**: Easy access to add new applications
 
-### 💾 Data Storage
+### 💾 Data Storage & Management
 - **Local Storage**: All data stored locally using IndexedDB
 - **Offline Support**: Works completely offline
 - **File Management**: Secure storage of resume and cover letter attachments
 - **Data Persistence**: Your data stays on your device
+- **Data Import/Export**: Import applications from JSON files and export your data
+- **Mock Data Generation**: Generate sample applications for testing (50 applications)
+- **Clean Data**: Clear all applications with one click (with confirmation)
+- **Data Debugging**: Built-in debugging tools for IndexedDB inspection
 
 ### 🎨 User Interface
 - **Material Design**: Clean, modern UI with Material-UI components
@@ -37,11 +44,14 @@ A modern, responsive web application for tracking job applications built with Re
 - **Intuitive Navigation**: Easy-to-use sidebar navigation
 - **Enhanced Job Cards**: Improved layout with Applied and Updated dates prominently displayed
 - **Context Menus**: Streamlined action menus for better user experience
+- **Data Grid**: Professional table view with Material-UI DataGrid component
+- **Loading States**: Visual feedback during data operations
+- **Success Notifications**: Confirmation messages for completed actions
 
 ## Tech Stack
 
 - **Frontend**: React 18 with TypeScript
-- **UI Library**: Material-UI (MUI) v5
+- **UI Library**: Material-UI (MUI) v5 with DataGrid component
 - **Build Tool**: Vite
 - **Database**: IndexedDB with idb wrapper
 - **Routing**: React Router
@@ -77,7 +87,7 @@ A modern, responsive web application for tracking job applications built with Re
    ```
 
 4. **Open your browser**
-   Navigate to `http://localhost:5173` to view the application
+   Navigate to `http://localhost:3001` to view the application
 
 ### Building for Production
 
@@ -112,10 +122,19 @@ The built files will be in the `dist` directory.
 - Use "Clear Filters" to reset all filters
 
 ### Managing Applications
-1. **Editing**: Click the three-dot menu on any application card and select "Edit"
+1. **Editing**: Click the three-dot menu on any application card or in the data grid and select "Edit"
 2. **Duplicating**: Use the "Duplicate" option from the context menu to create a copy
 3. **Deleting**: Select "Delete" from the context menu to remove an application
-4. Modify information as needed and click "Update" to save changes
+4. **Grid View**: Switch to data grid view for advanced sorting, filtering, and pagination
+5. **Bulk Operations**: Use Settings page for bulk data operations (import, export, clean)
+6. Modify information as needed and click "Update" to save changes
+
+### Settings & Data Management
+1. **Import Data**: Upload JSON files to import applications
+2. **Export Data**: Download your applications as JSON for backup
+3. **Generate Mock Data**: Create 50 sample applications for testing
+4. **Clean Data**: Remove all applications (useful for starting fresh)
+5. **Debug Tools**: Access IndexedDB debugging tools at `/debug-db.html`
 
 ## Project Structure
 

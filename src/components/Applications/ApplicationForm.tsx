@@ -390,6 +390,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               <Stack spacing={1}>
                 <Typography variant="subtitle2">
                   Resume (PDF/DOC/DOCX)
+                  {!resumeFile && application?.resumeBlob && application?.resumeMeta?.fileName && (
+                    <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                      - {application.resumeMeta.fileName}
+                    </Typography>
+                  )}
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                   <Button
@@ -452,6 +457,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({
               <Stack spacing={1}>
                 <Typography variant="subtitle2">
                   Cover Letter (PDF/DOC/DOCX)
+                  {!coverLetterFile && application?.coverLetterBlob && application?.coverLetterMeta?.fileName && (
+                    <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                      - {application.coverLetterMeta.fileName}
+                    </Typography>
+                  )}
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                   <Button
