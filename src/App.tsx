@@ -8,6 +8,7 @@ import { ApplicationForm } from "./components/Applications/ApplicationForm";
 import { Settings } from "./components/Settings";
 import type { Application } from "./types";
 import { useApplications } from "./hooks/useApplications";
+import { generateMockApplications } from "./utils/mockData";
 
 const theme = createTheme({
   palette: {
@@ -39,7 +40,10 @@ function App() {
     duplicateApplication,
     updateFilters,
     getStats,
+    refresh,
   } = useApplications();
+
+
 
   const handleNavigate = (route: string) => {
     setCurrentRoute(route);
@@ -85,6 +89,21 @@ function App() {
     }
   };
 
+  const handleGenerateMockData = async () => {
+    try {
+      const mockApplications = generateMockApplications(50);
+      console.log('🎯 Generating 50 mock applications...');
+      
+      for (const mockApp of mockApplications) {
+        await addApplication(mockApp);
+      }
+      
+      console.log('✅ Mock data generated successfully!');
+    } catch (error) {
+      console.error('❌ Failed to generate mock data:', error);
+    }
+  };
+
   const renderContent = () => {
     switch (currentRoute) {
       case "dashboard":
@@ -104,7 +123,7 @@ function App() {
           />
         );
       case "settings":
-        return <Settings />;
+        return <Settings onGenerateMockData={handleGenerateMockData} refresh={refresh} />;
       default:
         return (
           <div>

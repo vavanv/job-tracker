@@ -31,7 +31,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
   return (
     <Card
-      sx={{ mb: 3, p: 2 }}
+      sx={{ 
+        mb: 3, 
+        p: 2,
+        borderRadius: 3,
+        border: "1px solid #e0e0e0",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+      }}
     >
       <Grid container spacing={1} alignItems="center">
         <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>

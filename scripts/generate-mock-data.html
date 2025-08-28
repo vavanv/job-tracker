@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Tracker - Mock Data Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1976d2;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .description {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #1976d2;
+        }
+        .button {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #1565c0;
+        }
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #2e7d32;
+        }
+        .error {
+            background: #ffebee;
+            color: #d32f2f;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #d32f2f;
+        }
+        .log {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .instructions {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #e65100;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Job Application Tracker - Mock Data Generator</h1>
+        
+        <div class="description">
+            <strong>What does this do?</strong><br>
+            This tool generates 20 realistic mock job applications and stores them in your browser's local database. 
+            This is perfect for testing the Job Application Tracker app with sample data.
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Instructions:</h3>
+            <ol>
+                <li><strong>Make sure the Job Application Tracker app is running</strong> (usually at <code>http://localhost:3001</code>)</li>
+                <li>Click the "Generate Mock Data" button below</li>
+                <li>Wait for the success message</li>
+                <li>Refresh your Job Application Tracker app to see the new data</li>
+            </ol>
+            <p><strong>Note:</strong> This will add 20 new applications to your existing data. It won't delete any existing applications.</p>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button id="generateBtn" class="button" onclick="generateMockData()">Generate Mock Data</button>
+            <button id="clearBtn" class="button" onclick="clearAllData()" style="background: #d32f2f;">Clear All Data</button>
+        </div>
+
+        <div id="status"></div>
+        <div id="log" class="log" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Mock data arrays
+        const companies = [
+          { name: 'Google', website: 'https://google.com' },
+          { name: 'Microsoft', website: 'https://microsoft.com' },
+          { name: 'Apple', website: 'https://apple.com' },
+          { name: 'Amazon', website: 'https://amazon.com' },
+          { name: 'Meta', website: 'https://meta.com' },
+          { name: 'Netflix', website: 'https://netflix.com' },
+          { name: 'Tesla', website: 'https://tesla.com' },
+          { name: 'Spotify', website: 'https://spotify.com' },
+          { name: 'Airbnb', website: 'https://airbnb.com' },
+          { name: 'Uber', website: 'https://uber.com' },
+          { name: 'Salesforce', website: 'https://salesforce.com' },
+          { name: 'Adobe', website: 'https://adobe.com' },
+          { name: 'Shopify', website: 'https://shopify.com' },
+          { name: 'Stripe', website: 'https://stripe.com' },
+          { name: 'Zoom', website: 'https://zoom.us' },
+          { name: 'Slack', website: 'https://slack.com' },
+          { name: 'Dropbox', website: 'https://dropbox.com' },
+          { name: 'Twitter', website: 'https://twitter.com' },
+          { name: 'LinkedIn', website: 'https://linkedin.com' },
+          { name: 'GitHub', website: 'https://github.com' }
+        ];
+
+        const jobTitles = [
+          'Frontend Developer',
+          'Backend Developer',
+          'Full Stack Developer',
+          'Software Engineer',
+          'Senior Software Engineer',
+          'DevOps Engineer',
+          'Data Scientist',
+          'Product Manager',
+          'UX Designer',
+          'UI Designer',
+          'Mobile Developer',
+          'React Developer',
+          'Node.js Developer',
+          'Python Developer',
+          'Java Developer',
+          'Machine Learning Engineer',
+          'Cloud Architect',
+          'Technical Lead',
+          'Engineering Manager',
+          'QA Engineer'
+        ];
+
+        const statuses = ['Applied', 'Interview', 'Offer', 'Rejected', 'Withdrawn'];
+
+        const notes = [
+          'Great company culture and benefits package.',
+          'Interesting technical challenges in this role.',
+          'Remote-first company with flexible working hours.',
+          'Competitive salary and stock options.',
+          'Strong engineering team and mentorship opportunities.',
+          'Exciting product roadmap and growth potential.',
+          'Good work-life balance and learning opportunities.',
+          'Innovative company working on cutting-edge technology.',
+          'Collaborative environment with cross-functional teams.',
+          'Opportunity to work with modern tech stack.',
+          null, null, null // Some applications without notes
+        ];
+
+        // Helper functions
+        function getRandomItem(array) {
+          return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function getRandomDate(start, end) {
+          return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+        }
+
+        function generateUUID() {
+          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+          });
+        }
+
+        function generateMockApplication() {
+          const company = getRandomItem(companies);
+          const applicationDate = getRandomDate(new Date(2024, 0, 1), new Date());
+          const updatedAt = new Date(applicationDate.getTime() + Math.random() * (Date.now() - applicationDate.getTime()));
+          
+          return {
+            id: generateUUID(),
+            companyName: company.name,
+            companyWebsite: company.website,
+            jobTitle: getRandomItem(jobTitles),
+            applicationDate: applicationDate,
+            status: getRandomItem(statuses),
+            notes: getRandomItem(notes),
+            jobLink: `https://jobs.${company.website.split('//')[1]}/position-${Math.floor(Math.random() * 1000)}`,
+            createdAt: applicationDate,
+            updatedAt: updatedAt
+          };
+        }
+
+        // Function to seed the database (browser environment)
+        async function seedDatabase() {
+          try {
+            console.log('Opening IndexedDB database...');
+            
+            // Open the database using the same configuration as the app
+            const request = indexedDB.open('JobApplicationTracker', 2);
+            
+            return new Promise((resolve, reject) => {
+              request.onerror = () => {
+                console.error('Failed to open database:', request.error);
+                reject(request.error);
+              };
+              
+              request.onsuccess = async () => {
+                const db = request.result;
+                
+                try {
+                  console.log('Generating 20 mock applications...');
+                  
+                  const applications = [];
+                  for (let i = 0; i < 20; i++) {
+                    applications.push(generateMockApplication());
+                  }
+
+                  console.log('Inserting applications into database...');
+                  
+                  const transaction = db.transaction(['applications'], 'readwrite');
+                  const store = transaction.objectStore('applications');
+                  
+                  let completed = 0;
+                  const total = applications.length;
+                  
+                  applications.forEach((application, index) => {
+                    const request = store.add(application);
+                    
+                    request.onsuccess = () => {
+                      completed++;
+                      console.log(`Added application ${completed}/${total}: ${application.jobTitle} at ${application.companyName}`);
+                      
+                      if (completed === total) {
+                        console.log('✅ Successfully created 20 mock job applications!');
+                        console.log('Applications summary:');
+                        applications.forEach((app, idx) => {
+                          console.log(`${idx + 1}. ${app.jobTitle} at ${app.companyName} - ${app.status}`);
+                        });
+                        db.close();
+                        resolve(applications);
+                      }
+                    };
+                    
+                    request.onerror = () => {
+                      console.error(`Failed to add application ${index + 1}:`, request.error);
+                    };
+                  });
+                  
+                  transaction.onerror = () => {
+                    console.error('Transaction failed:', transaction.error);
+                    db.close();
+                    reject(transaction.error);
+                  };
+                  
+                } catch (error) {
+                  console.error('Error during seeding:', error);
+                  db.close();
+                  reject(error);
+                }
+              };
+              
+              request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                
+                if (!db.objectStoreNames.contains('applications')) {
+                  const store = db.createObjectStore('applications', { keyPath: 'id' });
+                  store.createIndex('companyName', 'companyName', { unique: false });
+                  store.createIndex('status', 'status', { unique: false });
+                  store.createIndex('applicationDate', 'applicationDate', { unique: false });
+                  console.log('Database schema created');
+                }
+              };
+            });
+            
+          } catch (error) {
+            console.error('❌ Error seeding database:', error);
+            throw error;
+          }
+        }
+
+        let logElement;
+        let statusElement;
+
+        function updateStatus(message, type = 'info') {
+            if (!statusElement) statusElement = document.getElementById('status');
+            
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : '';
+            statusElement.innerHTML = `<div class="${className}">${message}</div>`;
+        }
+
+        function addLog(message) {
+            if (!logElement) {
+                logElement = document.getElementById('log');
+                logElement.style.display = 'block';
+            }
+            
+            logElement.textContent += message + '\n';
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        // Override console.log to capture output
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            addLog(args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalConsoleError.apply(console, args);
+            addLog('ERROR: ' + args.join(' '));
+        };
+
+        async function generateMockData() {
+            const generateBtn = document.getElementById('generateBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            generateBtn.disabled = true;
+            clearBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+            
+            // Clear previous logs
+            if (logElement) {
+                logElement.textContent = '';
+                logElement.style.display = 'block';
+            }
+            
+            updateStatus('Generating mock data...', 'info');
+            
+            try {
+                await seedDatabase();
+                updateStatus('✅ Successfully generated 20 mock job applications! Refresh your Job Application Tracker app to see the new data.', 'success');
+            } catch (error) {
+                console.error('Failed to generate mock data:', error);
+                updateStatus('❌ Failed to generate mock data. Check the console for details.', 'error');
+            } finally {
+                generateBtn.disabled = false;
+                clearBtn.disabled = false;
+                generateBtn.textContent = 'Generate Mock Data';
+            }
+        }
+
+        async function clearAllData() {
+            if (!confirm('Are you sure you want to delete ALL job applications? This cannot be undone!')) {
+                return;
+            }
+            
+            const generateBtn = document.getElementById('generateBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            generateBtn.disabled = true;
+            clearBtn.disabled = true;
+            clearBtn.textContent = 'Clearing...';
+            
+            updateStatus('Clearing all data...', 'info');
+            
+            try {
+                const request = indexedDB.open('JobApplicationTracker', 2);
+                
+                request.onsuccess = () => {
+                    const db = request.result;
+                    const transaction = db.transaction(['applications'], 'readwrite');
+                    const store = transaction.objectStore('applications');
+                    
+                    const clearRequest = store.clear();
+                    
+                    clearRequest.onsuccess = () => {
+                        updateStatus('✅ All job applications have been deleted. Refresh your Job Application Tracker app.', 'success');
+                        db.close();
+                    };
+                    
+                    clearRequest.onerror = () => {
+                        updateStatus('❌ Failed to clear data.', 'error');
+                        db.close();
+                    };
+                };
+                
+                request.onerror = () => {
+                    updateStatus('❌ Failed to open database.', 'error');
+                };
+            } catch (error) {
+                console.error('Failed to clear data:', error);
+                updateStatus('❌ Failed to clear data. Check the console for details.', 'error');
+            } finally {
+                generateBtn.disabled = false;
+                clearBtn.disabled = false;
+                clearBtn.textContent = 'Clear All Data';
+            }
+        }
+
+        // Show initial instructions
+        updateStatus('Ready to generate mock data. Click the button above to start.', 'info');
+    </script>
+</body>
+</html>

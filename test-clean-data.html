@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Clean Data Functionality</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .output {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 3px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Clean Data Functionality</h1>
+    
+    <div class="section">
+        <h2>Database Operations</h2>
+        <button onclick="checkApplicationCount()">Check Application Count</button>
+        <button onclick="addTestApplication()">Add Test Application</button>
+        <button onclick="testClearAllApplications()">Test Clear All Applications</button>
+        <button onclick="clearOutput()">Clear Output</button>
+    </div>
+    
+    <div class="section">
+        <h2>Output</h2>
+        <div id="output" class="output">Click a button above to see results...</div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+            const span = document.createElement('span');
+            span.className = className;
+            span.textContent = `[${timestamp}] ${message}\n`;
+            output.appendChild(span);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            document.getElementById('output').innerHTML = 'Output cleared...';
+        }
+
+        // Initialize IndexedDB
+        async function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('JobApplicationTracker', 2);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('applications')) {
+                        const store = db.createObjectStore('applications', { keyPath: 'id' });
+                        store.createIndex('companyName', 'companyName', { unique: false });
+                        store.createIndex('status', 'status', { unique: false });
+                        store.createIndex('applicationDate', 'applicationDate', { unique: false });
+                    }
+                };
+            });
+        }
+
+        // Check application count
+        async function checkApplicationCount() {
+            try {
+                log('Checking application count...');
+                const db = await initDB();
+                const transaction = db.transaction(['applications'], 'readonly');
+                const store = transaction.objectStore('applications');
+                const countRequest = store.count();
+                
+                countRequest.onsuccess = () => {
+                    const count = countRequest.result;
+                    log(`📊 Current application count: ${count}`, count > 0 ? 'info' : 'success');
+                };
+                
+                countRequest.onerror = () => {
+                    log(`❌ Error counting applications: ${countRequest.error}`, 'error');
+                };
+                
+                db.close();
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Add a test application
+        async function addTestApplication() {
+            try {
+                log('Adding test application...');
+                const db = await initDB();
+                const transaction = db.transaction(['applications'], 'readwrite');
+                const store = transaction.objectStore('applications');
+                
+                const testApp = {
+                    id: 'test-' + Date.now(),
+                    companyName: 'Test Company',
+                    jobTitle: 'Test Position',
+                    applicationDate: new Date(),
+                    status: 'Applied',
+                    notes: 'Test application for debugging',
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                };
+                
+                const addRequest = store.add(testApp);
+                
+                addRequest.onsuccess = () => {
+                    log('✅ Test application added successfully', 'success');
+                    checkApplicationCount();
+                };
+                
+                addRequest.onerror = () => {
+                    log(`❌ Error adding test application: ${addRequest.error}`, 'error');
+                };
+                
+                db.close();
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test the clearAllApplications function
+        async function testClearAllApplications() {
+            try {
+                log('Testing clearAllApplications function...');
+                
+                // First check current count
+                await checkApplicationCount();
+                
+                // Clear all applications
+                const db = await initDB();
+                const transaction = db.transaction(['applications'], 'readwrite');
+                const store = transaction.objectStore('applications');
+                const clearRequest = store.clear();
+                
+                clearRequest.onsuccess = () => {
+                    log('✅ clearAllApplications completed successfully', 'success');
+                    // Check count after clearing
+                    setTimeout(() => checkApplicationCount(), 100);
+                };
+                
+                clearRequest.onerror = () => {
+                    log(`❌ Error in clearAllApplications: ${clearRequest.error}`, 'error');
+                };
+                
+                db.close();
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize on page load
+        window.onload = () => {
+            log('🚀 Test page loaded. Ready to test Clean Data functionality.');
+            checkApplicationCount();
+        };
+    </script>
+</body>
+</html>

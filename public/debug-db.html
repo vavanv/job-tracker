@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndexedDB Debug Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .output {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 3px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>IndexedDB Debug Tool</h1>
+    
+    <div class="section">
+        <h2>Database Information</h2>
+        <button onclick="checkDatabase()">Check Database</button>
+        <button onclick="listAllApplications()">List All Applications</button>
+        <button onclick="clearDatabase()">Clear Database</button>
+    </div>
+    
+    <div class="section">
+        <h2>Output</h2>
+        <div id="output" class="output">Click a button above to see results...</div>
+    </div>
+
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            document.getElementById('output').textContent = '';
+        }
+
+        async function checkDatabase() {
+            clearOutput();
+            log('Checking IndexedDB database...');
+            
+            try {
+                // Check if IndexedDB is supported
+                if (!('indexedDB' in window)) {
+                    log('❌ IndexedDB is not supported in this browser');
+                    return;
+                }
+                
+                log('✅ IndexedDB is supported');
+                
+                // Open database
+                const request = indexedDB.open('JobApplicationTracker', 2);
+                
+                request.onerror = () => {
+                    log('❌ Error opening database: ' + request.error);
+                };
+                
+                request.onsuccess = (event) => {
+                    const db = event.target.result;
+                    log(`✅ Database opened successfully`);
+                    log(`📊 Database name: ${db.name}`);
+                    log(`📊 Database version: ${db.version}`);
+                    log(`📊 Object stores: ${Array.from(db.objectStoreNames).join(', ')}`);
+                    
+                    db.close();
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    log('🔄 Database upgrade needed');
+                    const db = event.target.result;
+                    
+                    if (!db.objectStoreNames.contains('applications')) {
+                        log('🔧 Creating applications object store');
+                        const store = db.createObjectStore('applications', { keyPath: 'id' });
+                        store.createIndex('companyName', 'companyName', { unique: false });
+                        store.createIndex('status', 'status', { unique: false });
+                        store.createIndex('applicationDate', 'applicationDate', { unique: false });
+                    }
+                };
+                
+            } catch (error) {
+                log('❌ Error: ' + error.message);
+            }
+        }
+
+        async function listAllApplications() {
+            clearOutput();
+            log('Fetching all applications from database...');
+            
+            try {
+                const request = indexedDB.open('JobApplicationTracker', 2);
+                
+                request.onsuccess = (event) => {
+                    const db = event.target.result;
+                    const transaction = db.transaction(['applications'], 'readonly');
+                    const store = transaction.objectStore('applications');
+                    const getAllRequest = store.getAll();
+                    
+                    getAllRequest.onsuccess = () => {
+                        const applications = getAllRequest.result;
+                        log(`📊 Total applications found: ${applications.length}`);
+                        
+                        if (applications.length === 0) {
+                            log('📝 No applications found in database');
+                        } else {
+                            log('📝 Applications:');
+                            applications.forEach((app, index) => {
+                                log(`${index + 1}. ${app.companyName} - ${app.jobTitle} (${app.status})`);
+                            });
+                            
+                            log('\n📋 Full application data:');
+                            log(JSON.stringify(applications, null, 2));
+                        }
+                    };
+                    
+                    getAllRequest.onerror = () => {
+                        log('❌ Error fetching applications: ' + getAllRequest.error);
+                    };
+                    
+                    db.close();
+                };
+                
+                request.onerror = () => {
+                    log('❌ Error opening database: ' + request.error);
+                };
+                
+            } catch (error) {
+                log('❌ Error: ' + error.message);
+            }
+        }
+
+        async function clearDatabase() {
+            if (!confirm('Are you sure you want to clear all applications from the database?')) {
+                return;
+            }
+            
+            clearOutput();
+            log('Clearing database...');
+            
+            try {
+                const request = indexedDB.open('JobApplicationTracker', 2);
+                
+                request.onsuccess = (event) => {
+                    const db = event.target.result;
+                    const transaction = db.transaction(['applications'], 'readwrite');
+                    const store = transaction.objectStore('applications');
+                    const clearRequest = store.clear();
+                    
+                    clearRequest.onsuccess = () => {
+                        log('✅ Database cleared successfully');
+                    };
+                    
+                    clearRequest.onerror = () => {
+                        log('❌ Error clearing database: ' + clearRequest.error);
+                    };
+                    
+                    db.close();
+                };
+                
+                request.onerror = () => {
+                    log('❌ Error opening database: ' + request.error);
+                };
+                
+            } catch (error) {
+                log('❌ Error: ' + error.message);
+            }
+        }
+
+        // Auto-check database on page load
+        window.addEventListener('load', () => {
+            setTimeout(checkDatabase, 500);
+        });
+    </script>
+</body>
+</html>

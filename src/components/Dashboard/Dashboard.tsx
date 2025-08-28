@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Grid,
-  Paper,
   Typography,
   Box,
   Card,
@@ -119,22 +118,32 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick
         </Grid>
       </Grid>
 
-      <Paper sx={{ mt: 4, p: 3 }}>
+      <Card 
+        sx={{ 
+          mt: 4, 
+          p: 3,
+          borderRadius: 3,
+          border: "1px solid #e0e0e0",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+        }}
+      >
         <Typography variant="h6" gutterBottom>
           Quick Actions
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           Add new job applications or navigate to the Applications section to view and manage your existing applications.
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={onAddClick}
-          size="small"
-        >
-          New Application
-        </Button>
-      </Paper>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={onAddClick}
+            size="small"
+          >
+            New Application
+          </Button>
+        </Box>
+      </Card>
     </Box>
   );
 };
