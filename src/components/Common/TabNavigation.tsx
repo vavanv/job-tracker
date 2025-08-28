@@ -3,7 +3,6 @@ import {
   Tabs,
   Tab,
   Box,
-  useTheme,
 } from "@mui/material";
 import {
   Dashboard as DashboardIcon,
@@ -26,8 +25,6 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
   currentRoute,
   onNavigate,
 }) => {
-  const theme = useTheme();
-
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     onNavigate(newValue);
   };

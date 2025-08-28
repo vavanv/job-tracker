@@ -21,7 +21,7 @@ interface ApplicationListProps {
   filters: FilterOptions;
   onEdit: (application: Application) => void;
   onDelete: (id: string) => Promise<void>;
-  onDuplicate: (id: string) => Promise<void>;
+  onDuplicate: (application: Application) => Promise<string>;
   onUpdateFilters: (filters: Partial<FilterOptions>) => void;
   onAddClick: () => void;
 }
@@ -53,9 +53,9 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
     }
   };
 
-  const handleDuplicate = async (id: string) => {
+  const handleDuplicate = async (application: Application) => {
     try {
-      await onDuplicate(id);
+      await onDuplicate(application);
     } catch (error) {
       console.error("Failed to duplicate application:", error);
     }
@@ -142,7 +142,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
                 application={application}
                 onEdit={onEdit}
                 onDelete={handleDelete}
-                onDuplicate={handleDuplicate}
+                onDuplicate={() => handleDuplicate(application)}
               />
             </Grid>
           ))}

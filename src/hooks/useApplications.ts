@@ -78,14 +78,9 @@ export const useApplications = () => {
   );
 
   const duplicateApplication = useCallback(
-    async (id: string) => {
+    async (application: Application) => {
       try {
-        const originalApp = applications.find(app => app.id === id);
-        if (!originalApp) {
-          throw new Error("Application not found");
-        }
-        
-        const { id: _, createdAt, updatedAt, ...appData } = originalApp;
+        const { id: _, createdAt, updatedAt, ...appData } = application;
         const duplicatedApp = {
           ...appData,
           companyName: `${appData.companyName} (Copy)`,
@@ -102,7 +97,7 @@ export const useApplications = () => {
         throw err;
       }
     },
-    [applications, loadApplications]
+    [loadApplications]
   );
 
   const updateFilters = useCallback((newFilters: Partial<FilterOptions>) => {

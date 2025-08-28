@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, CssBaseline, Container, Typography } from "@mui/material";
+import { Box, CssBaseline, Container } from "@mui/material";
 import { TabNavigation } from "../Common/TabNavigation";
 
 interface LayoutProps {

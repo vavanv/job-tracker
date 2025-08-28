@@ -17,7 +17,6 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Launch as LaunchIcon,
-  CalendarToday as CalendarIcon,
   Description as DescriptionIcon,
   Article as ArticleIcon,
   Language as LanguageIcon,
@@ -30,8 +29,8 @@ import { ConfirmDialog } from "../Common/ConfirmDialog";
 
 interface ApplicationCardProps {
   application: Application;
-  onEdit: (application: Application) => void;
-  onDelete: (id: string) => void;
+  onEdit?: (application: Application) => void;
+  onDelete?: (id: string) => void;
   onDuplicate?: (application: Application) => void;
 }
 
@@ -54,16 +53,10 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
     return new Date(date).toLocaleDateString();
   };
 
-  const handleEdit = () => {
-    onEdit(application);
-  };
-
-  const handleDeleteClick = () => {
-    setShowDeleteDialog(true);
-  };
-
   const handleDeleteConfirm = () => {
-    onDelete(application.id);
+    if (onDelete) {
+      onDelete(application.id);
+    }
     setShowDeleteDialog(false);
   };
 
@@ -81,13 +74,15 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
 
   const handleMenuEdit = () => {
     handleMenuClose();
-    onEdit(application);
+    if (onEdit) {
+      onEdit(application);
+    }
   };
 
   const handleMenuDuplicate = () => {
     handleMenuClose();
     if (onDuplicate) {
-      onDuplicate(application.id);
+      onDuplicate(application);
     }
   };
 

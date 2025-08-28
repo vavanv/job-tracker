@@ -7,14 +7,8 @@ import {
   Card,
   CardContent,
   Button,
-  useTheme,
 } from "@mui/material";
 import {
-  Work as WorkIcon,
-  Schedule as ScheduleIcon,
-  CheckCircle as CheckCircleIcon,
-  Cancel as CancelIcon,
-  RemoveCircle as RemoveCircleIcon,
   Add as AddIcon,
 } from "@mui/icons-material";
 import type { Stats } from "../../types";
@@ -28,10 +22,9 @@ interface DashboardProps {
 const StatCard: React.FC<{
   title: string;
   value: number | string;
-  icon: React.ReactNode;
   color: string;
   bgColor: string;
-}> = ({ title, value, icon, color, bgColor }) => (
+}> = ({ title, value, color, bgColor }) => (
   <Card 
     sx={{ 
       height: "100%",
@@ -66,7 +59,6 @@ const StatCard: React.FC<{
 );
 
 export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick }) => {
-  const theme = useTheme();
 
   if (loading) {
     return (
@@ -94,7 +86,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick
           <StatCard
             title="Total Applications"
             value={stats.total}
-            icon={<WorkIcon />}
             color="#6366f1"
             bgColor="#f1f5f9"
           />
@@ -104,7 +95,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick
           <StatCard
             title="Interviews"
             value={stats.interview}
-            icon={<ScheduleIcon />}
             color="#f59e0b"
             bgColor="#fef3c7"
           />
@@ -114,7 +104,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick
           <StatCard
             title="Offers"
             value={stats.offer}
-            icon={<CheckCircleIcon />}
             color="#10b981"
             bgColor="#d1fae5"
           />
@@ -124,7 +113,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick
           <StatCard
             title="Success Rate"
             value={stats.total > 0 ? `${Math.round((stats.offer / stats.total) * 100)}%` : "0%"}
-            icon={<CheckCircleIcon />}
             color="#06b6d4"
             bgColor="#cffafe"
           />
