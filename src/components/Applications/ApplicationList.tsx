@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -10,8 +10,9 @@ import {
 } from "@mui/material";
 import type { Application, FilterOptions } from "../../types";
 import { ApplicationCard } from "./ApplicationCard";
-
+import { ApplicationGridView } from "./ApplicationGridView";
 import { FilterPanel } from "../Common/FilterPanel";
+import { ViewSwitcher, type ViewMode } from "../Common/ViewSwitcher";
 import { Add as AddIcon } from "@mui/icons-material";
 
 interface ApplicationListProps {
@@ -37,7 +38,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
   onUpdateFilters,
   onAddClick,
 }) => {
-  // Assume drawer is open on desktop by default (matching Layout component)
+  const [viewMode, setViewMode] = useState<ViewMode>('card');
 
 
 
@@ -98,14 +99,17 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
           <Typography variant="h4" component="h1">
             Applications
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={onAddClick}
-            size="small"
-          >
-            New Application
-          </Button>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <ViewSwitcher viewMode={viewMode} onViewModeChange={setViewMode} />
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={onAddClick}
+              size="small"
+            >
+              New Application
+            </Button>
+          </Box>
         </Box>
 
         <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
@@ -125,7 +129,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
               : "Start by adding your first job application using the New Application button above"}
           </Typography>
         </Paper>
-      ) : (
+      ) : viewMode === 'card' ? (
         <Grid container spacing={3}>
           {applications.map((application) => (
             <Grid 
@@ -147,6 +151,13 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
             </Grid>
           ))}
         </Grid>
+      ) : (
+        <ApplicationGridView
+          applications={applications}
+          onEdit={onEdit}
+          onDelete={handleDelete}
+          onDuplicate={handleDuplicate}
+        />
       )}
 
       {applications.length > 0 && (

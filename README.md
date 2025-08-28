@@ -6,10 +6,12 @@ A modern, responsive web application for tracking job applications built with Re
 
 ### 📋 Application Management
 - **Add/Edit Applications**: Create and modify job applications with comprehensive details
+- **Duplicate Applications**: Quickly duplicate existing applications with one click
 - **File Attachments**: Upload and manage resume and cover letter files (PDF, DOC, DOCX)
 - **Status Tracking**: Track application status with color-coded badges
 - **Company Information**: Store company names, websites, and job details
 - **Notes**: Add personal notes and observations for each application
+- **Context Menu**: Access Edit, Duplicate, and Delete actions via a convenient three-dot menu
 
 ### 🔍 Search & Filter
 - **Smart Search**: Search applications by company name or job title
@@ -33,6 +35,8 @@ A modern, responsive web application for tracking job applications built with Re
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
 - **Dark/Light Theme**: Automatic theme detection based on system preferences
 - **Intuitive Navigation**: Easy-to-use sidebar navigation
+- **Enhanced Job Cards**: Improved layout with Applied and Updated dates prominently displayed
+- **Context Menus**: Streamlined action menus for better user experience
 
 ## Tech Stack
 
@@ -107,10 +111,11 @@ The built files will be in the `dist` directory.
 - Set date ranges to filter by application date
 - Use "Clear Filters" to reset all filters
 
-### Editing Applications
-1. Click the "Edit" button on any application card
-2. Modify the information as needed
-3. Click "Update" to save changes
+### Managing Applications
+1. **Editing**: Click the three-dot menu on any application card and select "Edit"
+2. **Duplicating**: Use the "Duplicate" option from the context menu to create a copy
+3. **Deleting**: Select "Delete" from the context menu to remove an application
+4. Modify information as needed and click "Update" to save changes
 
 ## Project Structure
 
