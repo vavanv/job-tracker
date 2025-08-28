@@ -27,31 +27,38 @@ interface DashboardProps {
 
 const StatCard: React.FC<{
   title: string;
-  value: number;
+  value: number | string;
   icon: React.ReactNode;
   color: string;
-}> = ({ title, value, icon, color }) => (
-  <Card sx={{ height: "100%" }}>
-    <CardContent>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-        <Box
-          sx={{
-            backgroundColor: color,
-            borderRadius: "50%",
-            p: 1,
-            mr: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {icon}
-        </Box>
-        <Typography variant="h4" component="div" color="text.secondary">
-          {value}
-        </Typography>
-      </Box>
-      <Typography variant="body2" color="text.secondary">
+  bgColor: string;
+}> = ({ title, value, icon, color, bgColor }) => (
+  <Card 
+    sx={{ 
+      height: "100%",
+      backgroundColor: bgColor,
+      borderRadius: 3,
+      border: "1px solid #e0e0e0",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+    }}
+  >
+    <CardContent sx={{ p: 3, textAlign: "center" }}>
+      <Typography 
+        variant="h3" 
+        component="div" 
+        sx={{ 
+          color: color,
+          fontWeight: "bold",
+          mb: 1,
+          fontSize: "2.5rem"
+        }}
+      >
+        {value}
+      </Typography>
+      <Typography 
+        variant="body2" 
+        color="text.secondary"
+        sx={{ fontSize: "0.875rem" }}
+      >
         {title}
       </Typography>
     </CardContent>
@@ -87,17 +94,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick
           <StatCard
             title="Total Applications"
             value={stats.total}
-            icon={<WorkIcon sx={{ color: "white" }} />}
-            color={theme.palette.primary.main}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Applied"
-            value={stats.applied}
-            icon={<WorkIcon sx={{ color: "white" }} />}
-            color={theme.palette.info.main}
+            icon={<WorkIcon />}
+            color="#6366f1"
+            bgColor="#f1f5f9"
           />
         </Grid>
 
@@ -105,8 +104,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick
           <StatCard
             title="Interviews"
             value={stats.interview}
-            icon={<ScheduleIcon sx={{ color: "white" }} />}
-            color={theme.palette.warning.main}
+            icon={<ScheduleIcon />}
+            color="#f59e0b"
+            bgColor="#fef3c7"
           />
         </Grid>
 
@@ -114,26 +114,19 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick
           <StatCard
             title="Offers"
             value={stats.offer}
-            icon={<CheckCircleIcon sx={{ color: "white" }} />}
-            color={theme.palette.success.main}
+            icon={<CheckCircleIcon />}
+            color="#10b981"
+            bgColor="#d1fae5"
           />
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
-            title="Rejected"
-            value={stats.rejected}
-            icon={<CancelIcon sx={{ color: "white" }} />}
-            color={theme.palette.error.main}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-          <StatCard
-            title="Withdrawn"
-            value={stats.withdrawn}
-            icon={<RemoveCircleIcon sx={{ color: "white" }} />}
-            color={theme.palette.grey[500]}
+            title="Success Rate"
+            value={stats.total > 0 ? `${Math.round((stats.offer / stats.total) * 100)}%` : "0%"}
+            icon={<CheckCircleIcon />}
+            color="#06b6d4"
+            bgColor="#cffafe"
           />
         </Grid>
       </Grid>

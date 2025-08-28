@@ -19,15 +19,6 @@ const theme = createTheme({
       main: "#dc004e",
     },
   },
-  components: {
-    MuiDrawer: {
-      styleOverrides: {
-        paper: {
-          backgroundColor: "#fafafa",
-        },
-      },
-    },
-  },
 });
 
 function App() {
@@ -45,6 +36,7 @@ function App() {
     addApplication,
     updateApplication,
     deleteApplication,
+    duplicateApplication,
     updateFilters,
     getStats,
   } = useApplications();
@@ -106,6 +98,7 @@ function App() {
             filters={filters}
             onEdit={handleEditApplication}
             onDelete={deleteApplication}
+            onDuplicate={duplicateApplication}
             onUpdateFilters={updateFilters}
             onAddClick={handleAddClick}
           />

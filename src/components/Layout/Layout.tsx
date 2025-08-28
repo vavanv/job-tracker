@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { Box, CssBaseline, useTheme, useMediaQuery } from "@mui/material";
-import { AppBar } from "./AppBar";
-import { Drawer } from "./Drawer";
+import React from "react";
+import { Box, CssBaseline, Container, Typography } from "@mui/material";
+import { TabNavigation } from "../Common/TabNavigation";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,58 +8,22 @@ interface LayoutProps {
   onNavigate: (route: string) => void;
 }
 
-const DRAWER_WIDTH = 240;
-
 export const Layout: React.FC<LayoutProps> = ({
   children,
   currentRoute,
   onNavigate,
 }) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [desktopOpen, setDesktopOpen] = useState(true);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  const handleDrawerToggle = () => {
-    if (isMobile) {
-      setMobileOpen(!mobileOpen);
-    } else {
-      setDesktopOpen(!desktopOpen);
-    }
-  };
-
-  const handleNavigate = (route: string) => {
-    onNavigate(route);
-  };
-
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#F8FAFC" }}>
       <CssBaseline />
 
-      <AppBar onMenuClick={handleDrawerToggle} />
+      {/* Tab Navigation */}
+      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
+        <TabNavigation currentRoute={currentRoute} onNavigate={onNavigate} />
 
-      <Drawer
-        open={isMobile ? mobileOpen : desktopOpen}
-        onClose={() => isMobile ? setMobileOpen(false) : setDesktopOpen(false)}
-        onNavigate={handleNavigate}
-        currentRoute={currentRoute}
-      />
-
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          ml: { md: desktopOpen ? `${DRAWER_WIDTH}px` : 0 },
-          transition: theme.transitions.create(['margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
-        }}
-      >
-        <Box sx={{ ...theme.mixins.toolbar }} />
-        {children}
-      </Box>
+        {/* Main Content */}
+        <Box component="main">{children}</Box>
+      </Container>
     </Box>
   );
 };

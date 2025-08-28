@@ -77,6 +77,34 @@ export const useApplications = () => {
     [loadApplications]
   );
 
+  const duplicateApplication = useCallback(
+    async (id: string) => {
+      try {
+        const originalApp = applications.find(app => app.id === id);
+        if (!originalApp) {
+          throw new Error("Application not found");
+        }
+        
+        const { id: _, createdAt, updatedAt, ...appData } = originalApp;
+        const duplicatedApp = {
+          ...appData,
+          companyName: `${appData.companyName} (Copy)`,
+          status: ApplicationStatus.APPLIED
+        };
+        
+        const newId = await db.addApplication(duplicatedApp);
+        await loadApplications();
+        return newId;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to duplicate application"
+        );
+        throw err;
+      }
+    },
+    [applications, loadApplications]
+  );
+
   const updateFilters = useCallback((newFilters: Partial<FilterOptions>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
   }, []);
@@ -156,6 +184,7 @@ export const useApplications = () => {
     addApplication,
     updateApplication,
     deleteApplication,
+    duplicateApplication,
     updateFilters,
     getStats,
     refresh: loadApplications,

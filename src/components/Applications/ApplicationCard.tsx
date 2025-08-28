@@ -7,6 +7,11 @@ import {
   Button,
   Box,
   Stack,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -16,6 +21,8 @@ import {
   Description as DescriptionIcon,
   Article as ArticleIcon,
   Language as LanguageIcon,
+  MoreVert as MoreVertIcon,
+  ContentCopy as DuplicateIcon,
 } from "@mui/icons-material";
 import type { Application } from "../../types";
 import { StatusBadge } from "./StatusBadge";
@@ -25,6 +32,7 @@ interface ApplicationCardProps {
   application: Application;
   onEdit: (application: Application) => void;
   onDelete: (id: string) => void;
+  onDuplicate?: (application: Application) => void;
 }
 
 const withProtocol = (value?: string) => {
@@ -36,8 +44,11 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   application,
   onEdit,
   onDelete,
+  onDuplicate,
 }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(menuAnchorEl);
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString();
@@ -58,6 +69,31 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
 
   const handleDeleteCancel = () => {
     setShowDeleteDialog(false);
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const handleMenuEdit = () => {
+    handleMenuClose();
+    onEdit(application);
+  };
+
+  const handleMenuDuplicate = () => {
+    handleMenuClose();
+    if (onDuplicate) {
+      onDuplicate(application.id);
+    }
+  };
+
+  const handleMenuDelete = () => {
+    handleMenuClose();
+    setShowDeleteDialog(true);
   };
 
   const handleJobLink = () => {
@@ -87,7 +123,10 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
         display: "flex",
         flexDirection: "column",
         minWidth: 280,
-        maxWidth: 400,
+        width: "100%",
+        borderRadius: 3,
+        border: "1px solid #e0e0e0",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
@@ -99,36 +138,42 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
             mb: 2,
           }}
         >
-          <Typography
-            variant="h6"
-            component="h3"
-            gutterBottom
-            sx={{
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              lineHeight: 1.3,
-              minHeight: "2.6em",
-              wordBreak: "break-word",
-            }}
-          >
-            {application.jobTitle}
-          </Typography>
-          <StatusBadge status={application.status} />
+          <Box sx={{ flex: 1, mr: 1 }}>
+            <Typography
+              variant="h6"
+              component="h3"
+              gutterBottom
+              sx={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                lineHeight: 1.3,
+                minHeight: "2.6em",
+                wordBreak: "break-word",
+              }}
+            >
+              {application.jobTitle}
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <StatusBadge status={application.status} />
+            <IconButton
+              size="small"
+              onClick={handleMenuOpen}
+              sx={{ p: 0.5 }}
+            >
+              <MoreVertIcon fontSize="small" />
+            </IconButton>
+          </Box>
         </Box>
 
         <Typography variant="subtitle1" color="primary" gutterBottom>
           {application.companyName}
         </Typography>
 
-        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-          <CalendarIcon sx={{ fontSize: 16, mr: 1, color: "text.secondary" }} />
-          <Typography variant="body2" color="text.secondary">
-            Applied: {formatDate(application.applicationDate)}
-          </Typography>
-        </Box>
+
 
         {application.notes && (
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -136,13 +181,13 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           </Typography>
         )}
 
-        <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", mb: 1 }}>
+        <Stack direction="column" spacing={1} sx={{ mb: 1, alignItems: "flex-start" }}>
           {application.jobLink && (
             <Button
               startIcon={<LaunchIcon />}
               onClick={handleJobLink}
               size="small"
-              sx={{ mb: 1 }}
+              sx={{ justifyContent: "flex-start" }}
             >
               View Job Posting
             </Button>
@@ -151,7 +196,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
             <Button
               startIcon={<LanguageIcon />}
               size="small"
-              sx={{ mb: 1 }}
+              sx={{ justifyContent: "flex-start" }}
               onClick={() => window.open(websiteHref, "_blank")}
             >
               Company Website
@@ -195,34 +240,51 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
         )}
       </CardContent>
 
-      <CardActions
-        sx={{ flexDirection: "column", alignItems: "stretch", p: 2 }}
+      <Menu
+        anchorEl={menuAnchorEl}
+        open={menuOpen}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
       >
-        <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 1 }}>
-          <Button
-            variant="outlined"
-            startIcon={<EditIcon />}
-            onClick={handleEdit}
-            sx={{ mr: 1 }}
-            size="small"
-          >
-            Edit
-          </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={handleDeleteClick}
-            size="small"
-          >
-            Delete
-          </Button>
-        </Box>
+        <MenuItem onClick={handleMenuEdit}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Edit</ListItemText>
+        </MenuItem>
+        {onDuplicate && (
+          <MenuItem onClick={handleMenuDuplicate}>
+            <ListItemIcon>
+              <DuplicateIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Duplicate</ListItemText>
+          </MenuItem>
+        )}
+        <MenuItem onClick={handleMenuDelete}>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Delete</ListItemText>
+        </MenuItem>
+      </Menu>
 
+      <CardActions sx={{ p: 2, pt: 0, display: "flex", justifyContent: "space-between" }}>
         <Typography
           variant="caption"
           color="text.secondary"
-          sx={{ textAlign: "left" }}
+        >
+          Applied: {formatDate(application.applicationDate)}
+        </Typography>
+        <Typography
+          variant="caption"
+          color="text.secondary"
         >
           Updated: {formatDate(application.updatedAt)}
         </Typography>

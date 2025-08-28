@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Box,
+  Card,
   FormControl,
   InputLabel,
   Select,
@@ -29,8 +30,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   };
 
   return (
-    <Box
-      sx={{ mb: 3, p: 2, backgroundColor: "background.paper", borderRadius: 1 }}
+    <Card
+      sx={{ mb: 3, p: 2 }}
     >
       <Grid container spacing={1} alignItems="center">
         <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
@@ -121,6 +122,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           </Box>
         </Grid>
       </Grid>
-    </Box>
+    </Card>
   );
 };
