@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Tabs,
-  Tab,
-  Box,
-} from "@mui/material";
+import { Tabs, Tab, Box, useTheme } from "@mui/material";
 import {
   Dashboard as DashboardIcon,
   Work as WorkIcon,
@@ -25,6 +21,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
   currentRoute,
   onNavigate,
 }) => {
+  const theme = useTheme();
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     onNavigate(newValue);
   };
@@ -38,7 +35,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
         borderBottom: 1,
         borderColor: "divider",
         mb: 3,
-        backgroundColor: "#F8FAFC",
+        backgroundColor: theme.palette.background.paper,
       }}
     >
       <Tabs

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, CssBaseline, Container } from "@mui/material";
+import { Box, Container, useTheme } from "@mui/material";
 import { TabNavigation } from "../Common/TabNavigation";
 
 interface LayoutProps {
@@ -13,10 +13,15 @@ export const Layout: React.FC<LayoutProps> = ({
   currentRoute,
   onNavigate,
 }) => {
-  return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#F8FAFC" }}>
-      <CssBaseline />
+  const theme = useTheme();
 
+  return (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: theme.palette.background.default,
+      }}
+    >
       {/* Tab Navigation */}
       <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
         <TabNavigation currentRoute={currentRoute} onNavigate={onNavigate} />

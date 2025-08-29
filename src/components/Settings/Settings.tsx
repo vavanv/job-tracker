@@ -16,6 +16,8 @@ import {
   ListItem,
   ListItemText,
   styled,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import {
   Download as DownloadIcon,
@@ -23,11 +25,14 @@ import {
   Warning as WarningIcon,
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
+  Brightness4 as DarkModeIcon,
+  Brightness7 as LightModeIcon,
 } from "@mui/icons-material";
 import {
   exportApplicationsAsJSON,
   importApplicationsFromJSON,
 } from "../../utils/indexedDB";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -41,7 +46,6 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-
 interface ImportResult {
   imported: number;
   errors: string[];
@@ -52,7 +56,11 @@ interface SettingsProps {
   refresh: () => Promise<void>;
 }
 
-export const Settings: React.FC<SettingsProps> = ({ onGenerateMockData, refresh }) => {
+export const Settings: React.FC<SettingsProps> = ({
+  onGenerateMockData,
+  refresh,
+}) => {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -141,18 +149,22 @@ export const Settings: React.FC<SettingsProps> = ({ onGenerateMockData, refresh 
 
   const handleGenerateMockData = async () => {
     if (!onGenerateMockData) return;
-    
+
     try {
       setIsGenerating(true);
       setGenerateSuccess(false);
-      
+
       await onGenerateMockData();
-      
+
       setGenerateSuccess(true);
       setTimeout(() => setGenerateSuccess(false), 3000);
     } catch (error) {
-      console.error('Generate mock data failed:', error);
-      alert(`Generate mock data failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Generate mock data failed:", error);
+      alert(
+        `Generate mock data failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -162,25 +174,27 @@ export const Settings: React.FC<SettingsProps> = ({ onGenerateMockData, refresh 
     try {
       setIsCleaning(true);
       setCleanSuccess(false);
-      
+
       // Clear all applications from IndexedDB
-      const { clearAllApplications } = await import('../../utils/indexedDB');
+      const { clearAllApplications } = await import("../../utils/indexedDB");
       await clearAllApplications();
-      
+
       // Refresh the applications list
       await refresh();
-      
+
       setCleanSuccess(true);
       setTimeout(() => setCleanSuccess(false), 3000);
     } catch (error) {
-      console.error('Clean data failed:', error);
-      alert(`Clean data failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Clean data failed:", error);
+      alert(
+        `Clean data failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     } finally {
       setIsCleaning(false);
     }
   };
-
-
 
   return (
     <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
@@ -188,13 +202,15 @@ export const Settings: React.FC<SettingsProps> = ({ onGenerateMockData, refresh 
         Settings
       </Typography>
 
-      <Card sx={{ 
-        p: 3, 
-        mb: 3,
-        borderRadius: 3,
-        border: "1px solid #e0e0e0",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
-      }}>
+      <Card
+        sx={{
+          p: 3,
+          mb: 3,
+          borderRadius: 3,
+          border: "1px solid #e0e0e0",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        }}
+      >
         <Typography variant="h6" component="h2" gutterBottom>
           Data Management
         </Typography>
@@ -245,7 +261,7 @@ export const Settings: React.FC<SettingsProps> = ({ onGenerateMockData, refresh 
             sx={{ minWidth: 150 }}
             size="small"
           >
-            {isCleaning ? 'Cleaning...' : 'Clean Data'}
+            {isCleaning ? "Cleaning..." : "Clean Data"}
           </Button>
         </Stack>
 
@@ -274,15 +290,53 @@ export const Settings: React.FC<SettingsProps> = ({ onGenerateMockData, refresh 
         </Typography>
       </Card>
 
-      {/* Sample Data Section */}
-      {onGenerateMockData && (
-        <Card sx={{ 
-          p: 3, 
+      {/* Theme Settings Section */}
+      <Card
+        sx={{
+          p: 3,
           mb: 3,
           borderRadius: 3,
           border: "1px solid #e0e0e0",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
-        }}>
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Typography variant="h6" component="h2" gutterBottom>
+          Appearance
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Customize the appearance of the application.
+        </Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {isDarkMode ? (
+            <DarkModeIcon sx={{ color: "text.secondary" }} />
+          ) : (
+            <LightModeIcon sx={{ color: "text.secondary" }} />
+          )}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isDarkMode}
+                onChange={toggleTheme}
+                color="primary"
+              />
+            }
+            label={isDarkMode ? "Dark Mode" : "Light Mode"}
+          />
+        </Box>
+      </Card>
+
+      {/* Sample Data Section */}
+      {onGenerateMockData && (
+        <Card
+          sx={{
+            p: 3,
+            mb: 3,
+            borderRadius: 3,
+            border: "1px solid #e0e0e0",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          }}
+        >
           <Typography variant="h6" component="h2" gutterBottom>
             Sample Data
           </Typography>
@@ -298,9 +352,9 @@ export const Settings: React.FC<SettingsProps> = ({ onGenerateMockData, refresh 
             sx={{ minWidth: 200 }}
             size="small"
           >
-            {isGenerating ? 'Generating...' : 'Add 50 More Sample Applications'}
+            {isGenerating ? "Generating..." : "Add 50 More Sample Applications"}
           </Button>
-          
+
           {generateSuccess && (
             <Alert severity="success" icon={<CheckCircleIcon />} sx={{ mt: 2 }}>
               50 sample applications have been successfully added!
@@ -416,8 +470,6 @@ export const Settings: React.FC<SettingsProps> = ({ onGenerateMockData, refresh 
           </Button>
         </DialogActions>
       </Dialog>
-
-
     </Box>
   );
 };

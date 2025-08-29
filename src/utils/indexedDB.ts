@@ -1,7 +1,12 @@
 import { openDB } from "idb";
 import type { IDBPDatabase } from "idb";
 import type { Application } from "../types";
-import { DATABASE_NAME, DATABASE_VERSION, STORE_NAME } from "./constants";
+import {
+  DATABASE_NAME,
+  DATABASE_VERSION,
+  STORE_NAME,
+  SETTINGS_STORE_NAME,
+} from "./constants";
 
 let db: IDBPDatabase | null = null;
 
@@ -9,7 +14,7 @@ export const initDB = async (): Promise<IDBPDatabase> => {
   if (db) return db;
 
   db = await openDB(DATABASE_NAME, DATABASE_VERSION, {
-    upgrade(db, _oldVersion) {
+    upgrade(db, oldVersion) {
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, { keyPath: "id" });
         store.createIndex("companyName", "companyName", { unique: false });
@@ -20,6 +25,13 @@ export const initDB = async (): Promise<IDBPDatabase> => {
       }
       // v2: attachments stored inside Application objects as Blob and metadata fields
       // No new stores or indexes required; existing store remains compatible
+
+      // v3: Add settings store for theme preferences
+      if (oldVersion < 3) {
+        if (!db.objectStoreNames.contains(SETTINGS_STORE_NAME)) {
+          db.createObjectStore(SETTINGS_STORE_NAME, { keyPath: "key" });
+        }
+      }
     },
   });
 
@@ -354,4 +366,25 @@ export const clearAllApplications = async (): Promise<void> => {
   const tx = database.transaction(STORE_NAME, "readwrite");
   await tx.objectStore(STORE_NAME).clear();
   await tx.done;
+};
+
+// Settings functions for theme preferences
+export const saveSetting = async (key: string, value: any): Promise<void> => {
+  const database = await initDB();
+  await database.put(SETTINGS_STORE_NAME, { key, value });
+};
+
+export const getSetting = async (key: string): Promise<any> => {
+  const database = await initDB();
+  const setting = await database.get(SETTINGS_STORE_NAME, key);
+  return setting ? setting.value : null;
+};
+
+export const getAllSettings = async (): Promise<Record<string, any>> => {
+  const database = await initDB();
+  const settings = await database.getAll(SETTINGS_STORE_NAME);
+  return settings.reduce((acc, setting) => {
+    acc[setting.key] = setting.value;
+    return acc;
+  }, {} as Record<string, any>);
 };

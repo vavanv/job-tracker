@@ -6,10 +6,9 @@ import {
   Card,
   CardContent,
   Button,
+  useTheme,
 } from "@mui/material";
-import {
-  Add as AddIcon,
-} from "@mui/icons-material";
+import { Add as AddIcon } from "@mui/icons-material";
 import type { Stats } from "../../types";
 
 interface DashboardProps {
@@ -23,42 +22,59 @@ const StatCard: React.FC<{
   value: number | string;
   color: string;
   bgColor: string;
-}> = ({ title, value, color, bgColor }) => (
-  <Card 
-    sx={{ 
-      height: "100%",
-      backgroundColor: bgColor,
-      borderRadius: 3,
-      border: "1px solid #e0e0e0",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
-    }}
-  >
-    <CardContent sx={{ p: 3, textAlign: "center" }}>
-      <Typography 
-        variant="h3" 
-        component="div" 
-        sx={{ 
-          color: color,
-          fontWeight: "bold",
-          mb: 1,
-          fontSize: "2.5rem"
-        }}
-      >
-        {value}
-      </Typography>
-      <Typography 
-        variant="body2" 
-        color="text.secondary"
-        sx={{ fontSize: "0.875rem" }}
-      >
-        {title}
-      </Typography>
-    </CardContent>
-  </Card>
-);
+}> = ({ title, value, color, bgColor }) => {
+  const theme = useTheme();
 
-export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick }) => {
+  return (
+    <Card
+      sx={{
+        height: "100%",
+        backgroundColor:
+          theme.palette.mode === "dark"
+            ? theme.palette.background.paper
+            : bgColor,
+        borderRadius: 3,
+        border: `1px solid ${theme.palette.divider}`,
+        boxShadow:
+          theme.palette.mode === "dark"
+            ? "0 2px 8px rgba(0,0,0,0.3)"
+            : "0 2px 8px rgba(0,0,0,0.1)",
+      }}
+    >
+      <CardContent sx={{ p: 3, textAlign: "center" }}>
+        <Typography
+          variant="h3"
+          component="div"
+          sx={{
+            color:
+              theme.palette.mode === "dark"
+                ? theme.palette.primary.main
+                : color,
+            fontWeight: "bold",
+            mb: 1,
+            fontSize: "2.5rem",
+          }}
+        >
+          {value}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ fontSize: "0.875rem" }}
+        >
+          {title}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+};
 
+export const Dashboard: React.FC<DashboardProps> = ({
+  stats,
+  loading,
+  onAddClick,
+}) => {
+  const theme = useTheme();
   if (loading) {
     return (
       <Box
@@ -111,29 +127,37 @@ export const Dashboard: React.FC<DashboardProps> = ({ stats, loading, onAddClick
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title="Success Rate"
-            value={stats.total > 0 ? `${Math.round((stats.offer / stats.total) * 100)}%` : "0%"}
+            value={
+              stats.total > 0
+                ? `${Math.round((stats.offer / stats.total) * 100)}%`
+                : "0%"
+            }
             color="#06b6d4"
             bgColor="#cffafe"
           />
         </Grid>
       </Grid>
 
-      <Card 
-        sx={{ 
-          mt: 4, 
+      <Card
+        sx={{
+          mt: 4,
           p: 3,
           borderRadius: 3,
-          border: "1px solid #e0e0e0",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+          border: `1px solid ${theme.palette.divider}`,
+          boxShadow:
+            theme.palette.mode === "dark"
+              ? "0 2px 8px rgba(0,0,0,0.3)"
+              : "0 2px 8px rgba(0,0,0,0.1)",
         }}
       >
         <Typography variant="h6" gutterBottom>
           Quick Actions
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Add new job applications or navigate to the Applications section to view and manage your existing applications.
+          Add new job applications or navigate to the Applications section to
+          view and manage your existing applications.
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
