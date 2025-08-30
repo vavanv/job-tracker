@@ -4,15 +4,9 @@ import { TabNavigation } from "../Common/TabNavigation";
 
 interface LayoutProps {
   children: React.ReactNode;
-  currentRoute: string;
-  onNavigate: (route: string) => void;
 }
 
-export const Layout: React.FC<LayoutProps> = ({
-  children,
-  currentRoute,
-  onNavigate,
-}) => {
+export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const theme = useTheme();
 
   return (
@@ -24,7 +18,7 @@ export const Layout: React.FC<LayoutProps> = ({
     >
       {/* Tab Navigation */}
       <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
-        <TabNavigation currentRoute={currentRoute} onNavigate={onNavigate} />
+        <TabNavigation />
 
         {/* Main Content */}
         <Box component="main">{children}</Box>

@@ -1,29 +1,26 @@
 import React from "react";
 import { Tabs, Tab, Box, useTheme } from "@mui/material";
+import { Link, useLocation } from "react-router-dom";
 import {
   Dashboard as DashboardIcon,
   Work as WorkIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
 
-interface TabNavigationProps {
-  currentRoute: string;
-  onNavigate: (route: string) => void;
-}
-
 const menuItems = [
-  { text: "Dashboard", icon: <DashboardIcon />, route: "dashboard" },
-  { text: "Applications", icon: <WorkIcon />, route: "applications" },
-  { text: "Settings", icon: <SettingsIcon />, route: "settings" },
+  { text: "Dashboard", icon: <DashboardIcon />, route: "/dashboard" },
+  { text: "Applications", icon: <WorkIcon />, route: "/applications" },
+  { text: "Settings", icon: <SettingsIcon />, route: "/settings" },
 ];
 
-export const TabNavigation: React.FC<TabNavigationProps> = ({
-  currentRoute,
-  onNavigate,
-}) => {
+export const TabNavigation: React.FC = () => {
   const theme = useTheme();
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
-    onNavigate(newValue);
+  const location = useLocation();
+
+  const getCurrentValue = () => {
+    const currentPath = location.pathname;
+    if (currentPath === "/") return "/dashboard";
+    return currentPath;
   };
 
   return (
@@ -39,8 +36,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
       }}
     >
       <Tabs
-        value={currentRoute}
-        onChange={handleTabChange}
+        value={getCurrentValue()}
         aria-label="navigation tabs"
         variant="fullWidth"
         sx={{
@@ -59,6 +55,8 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
             value={item.route}
             icon={item.icon}
             iconPosition="start"
+            component={Link}
+            to={item.route}
             sx={{
               "& .MuiTab-iconWrapper": {
                 marginRight: 1,
